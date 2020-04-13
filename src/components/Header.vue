@@ -31,7 +31,7 @@
                 <li>
                   <Dropdown>
                     <a href="javascript:void(0)" target="_blank" class="homego">
-                      <Avatar src="https://i.loli.net/2017/08/21/599a521472424.jpg"/>
+                      <Avatar :src="user.userImage"/>
                       <span style="font-size: 16px">{{user.userName}}</span>
                       <Icon type="ios-arrow-down"></Icon>
                     </a>

@@ -103,8 +103,11 @@
                         <span>{{item.createDate}}</span>
                       </div>
                       <div class="fr attention">
-                        <span class="attentionText">收藏</span>
-                        <span class="beforeclose">  <Icon type="ios-thumbs-up" size="20"/></span>
+                        <span class="attentionText" v-if="item.isCollection === '0'" @click="collection(item)">收藏</span>
+                        <span class="attentionText" v-if="item.isCollection === '1'"
+                              @click="unCollection(item.articleId)">取消收藏</span>
+                        <span class="beforeclose"  v-if="isThumbup"><Icon type="ios-thumbs-up" size="20"/></span>
+                        <span class="beforeclose" style="cursor: pointer;" v-if="!isThumbup" @click="changeThumbup(item)"><Icon type="ios-thumbs-up-outline" size="20"/></span>
                       </div>
                       <div class="clearfix"></div>
                     </h5>
@@ -347,11 +350,19 @@
 <script>
     import Header from '@/components/Header'
     import '@/assets/css/page-sj-headline-login.css'
-    import {getCategory, findSearchArticle, getArticleByCategoryId} from '@/pages/api/article'
+    import {
+        getCategory,
+        findSearchArticle,
+        collectionArticle,
+        unCollection,
+        thumbup,
+        searchCollection
+    } from '@/pages/api/article'
 
     export default {
         data() {
             return {
+                isThumbup: false,
                 isRefresh: false,
                 isRefreshtitle: "换一批",
                 carouselImage: 0,
@@ -371,6 +382,53 @@
             }
         },
         methods: {
+            changeThumbup(item) {
+                this.$Loading.start();
+                thumbup(item.articleId).then((res) => {
+                    if (res.data.code === 20000) {
+                        this.$Message.success('点赞成功');
+                        this.isThumbup = true
+                    }
+                    this.$Loading.finish();
+                }).catch(error => {
+                    this.$Message.error('点赞失败');
+                    this.$Loading.error();
+                })
+            },
+            collection(item) {
+                this.$Loading.start();
+                let params = {
+                    articleId: item.articleId,
+                    articleTitle: item.articleTitle || '',
+                    userId: item.userId || '',
+                    userImage: item.userImage || '',
+                    userName: item.userName || ''
+                }
+                collectionArticle(params).then((res) => {
+                    if (res.data.code === 20000) {
+                        this.$Message.success('收藏成功');
+                        this.getLoadData()
+                    }
+                    this.$Loading.finish();
+                }).catch(error => {
+                    this.$Message.error('收藏失败');
+                    this.$Loading.error();
+                })
+
+            },
+            unCollection(articleId) {
+                this.$Loading.start();
+                unCollection(articleId).then((res) => {
+                    if (res.data.code === 20000) {
+                        this.$Message.success('已取消收藏');
+                    }
+                    this.getLoadData()
+                    this.$Loading.finish();
+                }).catch(error => {
+                    this.$Message.error('取消收藏失败');
+                    this.$Loading.error();
+                })
+            },
             clearData() {
                 this.info.params.filterContent = ''
                 this.info.params.page = 1
@@ -444,13 +502,15 @@
                     this.isRefresh = false
                     this.isRefreshtitle = "换一批"
                     let data = res.data.data.rows
-                    this.info.params.total = res.data.data.total
+                    this.info.params.total = Number(res.data.data.total)
                     if (data) {
                         let list = []
                         const _this = this
                         for (let i = 0; i < data.length; i++) {
-                            const {createDate, articleId, userId, userName, userImage, filterContent, title} = data[i]
+                            const {createDate, articleId, userId, userName, userImage, filterContent, title, isCollection} = data[i]
                             list.push({
+                                userId: userId,
+                                isCollection: isCollection,
                                 userName: userName,
                                 userImage: userImage,
                                 createDate: createDate.substring(5, 11),

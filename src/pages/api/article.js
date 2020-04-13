@@ -32,3 +32,36 @@ export function getArticleById(id) {
 export function getCategory() {
   return Request.get('article/category/getcategory')
 }
+
+// 收藏
+export function collectionArticle(params = {
+  artilceId: '',
+  artilceTitle: '',
+  userId: '',
+  userImage: "",
+  userName: ""
+}) {
+  return Request.post(baseUrl + '/collection', params)
+}
+
+// 查看收藏
+export function searchCollection(params = {
+  artilceId: '',
+  artilceTitle: '',
+  userId: '',
+  userImage: "",
+  userName: ""
+}) {
+  return Request.post(baseUrl + '/search/collection', params)
+}
+
+// 取消收藏
+export function unCollection(articleId) {
+  return Request.get(baseUrl + '/unCollection?articleId=' + articleId)
+}
+
+
+// 点赞
+export function thumbup(articleId) {
+  return Request.get(baseUrl + '/thumbup/article?articleId=' + articleId)
+}
