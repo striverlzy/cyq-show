@@ -103,11 +103,14 @@
                         <span>{{item.createDate}}</span>
                       </div>
                       <div class="fr attention">
-                        <span class="attentionText" v-if="item.isCollection === '0'" @click="collection(item)">收藏</span>
+                        <span class="attentionText" v-if="item.isCollection === '0'"
+                              @click="collection(item,index)">收藏</span>
                         <span class="attentionText" v-if="item.isCollection === '1'"
-                              @click="unCollection(item.articleId)">取消收藏</span>
-                        <span class="beforeclose"  v-if="isThumbup"><Icon type="ios-thumbs-up" size="20"/></span>
-                        <span class="beforeclose" style="cursor: pointer;" v-if="!isThumbup" @click="changeThumbup(item)"><Icon type="ios-thumbs-up-outline" size="20"/></span>
+                              @click="unCollection(item.articleId,index)">取消收藏</span>
+                        <span class="beforeclose" style="cursor: pointer;"  v-if="item.isThumbup === '1'" @click="unThumbup(item,index)"><Icon
+                          type="ios-thumbs-up" size="20"/></span>
+                        <span class="beforeclose" style="cursor: pointer;" v-if="item.isThumbup === '0'"
+                              @click="thumbup(item,index)"><Icon type="ios-thumbs-up-outline" size="20"/></span>
                       </div>
                       <div class="clearfix"></div>
                     </h5>
@@ -356,13 +359,13 @@
         collectionArticle,
         unCollection,
         thumbup,
+        unthumbup,
         searchCollection
     } from '@/pages/api/article'
 
     export default {
         data() {
             return {
-                isThumbup: false,
                 isRefresh: false,
                 isRefreshtitle: "换一批",
                 carouselImage: 0,
@@ -382,12 +385,12 @@
             }
         },
         methods: {
-            changeThumbup(item) {
+            thumbup(item, index) {
                 this.$Loading.start();
                 thumbup(item.articleId).then((res) => {
                     if (res.data.code === 20000) {
                         this.$Message.success('点赞成功');
-                        this.isThumbup = true
+                        this.info.articleList[index].isThumbup = "1"
                     }
                     this.$Loading.finish();
                 }).catch(error => {
@@ -395,7 +398,20 @@
                     this.$Loading.error();
                 })
             },
-            collection(item) {
+            unThumbup(item, index) {
+                this.$Loading.start();
+                unthumbup(item.articleId).then((res) => {
+                    if (res.data.code === 20000) {
+                        this.$Message.success('已取消');
+                        this.info.articleList[index].isThumbup = "0"
+                    }
+                    this.$Loading.finish();
+                }).catch(error => {
+                    this.$Message.error('取消点赞失败');
+                    this.$Loading.error();
+                })
+            },
+            collection(item, index) {
                 this.$Loading.start();
                 let params = {
                     articleId: item.articleId,
@@ -407,7 +423,7 @@
                 collectionArticle(params).then((res) => {
                     if (res.data.code === 20000) {
                         this.$Message.success('收藏成功');
-                        this.getLoadData()
+                        this.info.articleList[index].isCollection = "1"
                     }
                     this.$Loading.finish();
                 }).catch(error => {
@@ -416,13 +432,13 @@
                 })
 
             },
-            unCollection(articleId) {
+            unCollection(articleId, index) {
                 this.$Loading.start();
                 unCollection(articleId).then((res) => {
                     if (res.data.code === 20000) {
                         this.$Message.success('已取消收藏');
+                        this.info.articleList[index].isCollection = "0"
                     }
-                    this.getLoadData()
                     this.$Loading.finish();
                 }).catch(error => {
                     this.$Message.error('取消收藏失败');
@@ -507,8 +523,9 @@
                         let list = []
                         const _this = this
                         for (let i = 0; i < data.length; i++) {
-                            const {createDate, articleId, userId, userName, userImage, filterContent, title, isCollection} = data[i]
+                            const {createDate, articleId, userId, userName, userImage, filterContent, title, isCollection, isThumbup} = data[i]
                             list.push({
+                                isThumbup: isThumbup,
                                 userId: userId,
                                 isCollection: isCollection,
                                 userName: userName,

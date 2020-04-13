@@ -65,3 +65,9 @@ export function unCollection(articleId) {
 export function thumbup(articleId) {
   return Request.get(baseUrl + '/thumbup/article?articleId=' + articleId)
 }
+
+// 取消点赞
+export function unthumbup(articleId) {
+  return Request.get(baseUrl + '/unthumbup/article?articleId=' + articleId)
+}
+
