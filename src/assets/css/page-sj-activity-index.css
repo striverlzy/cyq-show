@@ -91,7 +91,8 @@ i {
 .activity-card-list .top-title .latest {
   padding-left: 30px;
   margin-right: 10px;
-  border-bottom: 2px solid #e64620;
+  cursor: pointer;
+  /*border-bottom: 2px solid #e64620;*/
   font-size: 16px;
 }
 

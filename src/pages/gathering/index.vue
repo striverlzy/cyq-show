@@ -4,7 +4,9 @@
     <div class="wrapper activities">
       <div class="activity-card-list">
         <div class="top-title">
-          <h4 class="latest">最新活动</h4>
+          <h4 class="latest" @click="cnewState()" :style="newState">最新活动</h4>
+          <h4 class="latest" @click="chotState()" :style="hotState">最热活动</h4>
+          <h4 class="latest" @click="cstopState()" :style="stopState">已结束活动</h4>
           <div class="clearfix"></div>
         </div>
         <div class="activity-list">
@@ -13,7 +15,8 @@
               <div class="activity-inner">
                 <a @click="getDetail(item)"></a>
                 <div class="img" style="width: 277px;height: 181px">
-                  <a :href="hrefUrl" @click="getDetail(item)" target="_blank"><img :src="item.gatheringImage" alt=""/></a>
+                  <a :href="hrefUrl" @click="getDetail(item)" target="_blank"><img :src="item.gatheringImage"
+                                                                                   alt=""/></a>
                 </div>
                 <div class="text">
                   <p class="title">{{item.title}}</p>
@@ -28,26 +31,6 @@
                 </div>
               </div>
             </li>
-            <!--            <li class="activity-item">-->
-            <!--              <div class="activity-inner">-->
-            <!--                <a href="http://"></a>-->
-            <!--                <div class="img">-->
-            <!--                  <a href="@/assets/activity-detail.html" target="_blank"><img src="@/assets/img/activity3.png" alt=""/></a>-->
-            <!--                </div>-->
-            <!--                <div class="text">-->
-            <!--                  <p class="title">2020(第二届)海口国际新能源</p>-->
-            <!--                  <div class="fl goin">-->
-            <!--                    <p>时间：2020-01-10 周五</p>-->
-            <!--                    <p>城市：广州</p>-->
-            <!--                  </div>-->
-            <!--                  <div class="fr btn">-->
-            <!--                    <span class="sui-btn btn-bao">活动结束</span>-->
-            <!--                  </div>-->
-            <!--                  <div class="clearfix"></div>-->
-            <!--                </div>-->
-            <!--              </div>-->
-            <!--            </li>-->
-
           </ul>
         </div>
       </div>
@@ -62,31 +45,59 @@
     export default {
         data() {
             return {
+                newState: '',
+                hotState: '',
+                stopState: '',
                 hrefUrl: '',
                 info: {
                     gatheringList: [],
                     params: {
+                        isHost: '0',
                         gatheringId: '',
+                        state: '',
                         gatheringTitle: '',
                         userId: '',
                         page: 1,
-                        size: 3,
+                        size: 100,
                         total: 0
                     }
                 }
             }
         },
         methods: {
-            getDetail(item){
+           async cnewState() { // 最新活动
+                this.newState = 'border-bottom: 2px solid #e64620;'
+                this.hotState = ''
+                this.stopState = ''
+                await this.changeParam("0","0");
+                this.getLoadData()
+            },
+            async chotState() { // 最热活动
+                this.newState = ''
+                this.hotState = 'border-bottom: 2px solid #e64620;'
+                this.stopState = ''
+                await this.changeParam("1","0");
+                this.getLoadData()
+            },
+            async cstopState() { // 已结束活动
+                this.newState = ''
+                this.hotState = ''
+                this.stopState = 'border-bottom: 2px solid #e64620;'
+                await this.changeParam("0","1");
+                this.getLoadData()
+            },
+            getDetail(item) {
                 this.hrefUrl = 'http://localhost:10002/#/gathering/detail?gatheringId=' + item.gatheringId
-
-                // this.$router.push({path: url})
+            },
+            changeParam(isHost,state){
+                this.info.params.isHost = isHost
+                this.info.params.state = state
             },
             getLoadData() {
                 this.$Loading.start();
                 let params = {
-                    isHost: '0',
-                    state: '',
+                    isHost: this.info.params.isHost,
+                    state: this.info.params.state,
                     page: this.info.params.page,
                     size: this.info.params.size
                 }
@@ -99,7 +110,7 @@
                 })
             },
             loadData() {
-                this.getLoadData()
+                this.cnewState()
             }
         },
         created() {
