@@ -142,6 +142,7 @@
 
 <script>
     import {toSubmit} from '@/pages/api/article'
+    // import *  as '@/utils/filesUtils'
     import Header from '@/components/Header'
     import {quillRedefine} from 'vue-quill-editor-upload'
     import {getCategory, getArticleById, getArticleByCategoryId} from '@/pages/api/article'

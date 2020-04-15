@@ -90,23 +90,25 @@ i {
 }
 
 .img-text .right-txt p {
-  font-size: 16px;
+  font-size: 18px;
   color: #666;
   line-height: 28px;
 }
 
 .img-text .right-txt p .big {
-  font-size: 20px;
+  font-size: 22px;
+  font-weight: bold;
+  color: red;
 }
 
 .img-text .right-txt .join {
   margin: 10px 0;
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .img-text .right-txt .join .sui-btn {
   padding: 7px 24px;
-  font-size: 16px;
+  font-size: 18px;
   font-family: 'Microsoft Yahei';
 }
 

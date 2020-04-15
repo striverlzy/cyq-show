@@ -40,6 +40,11 @@ export default new Router({
       component: () => import('@/pages/gathering/index.vue')
     },
     {
+      path: '/gathering/detail',
+      name: '活动',
+      component: () => import('@/pages/gathering/gatheringDetail.vue')
+    },
+    {
       path: '/transaction',
       name: '车务',
       component: () => import('@/pages/transaction/index.vue')

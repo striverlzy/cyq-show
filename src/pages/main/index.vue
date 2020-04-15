@@ -21,21 +21,7 @@
           <div class="fl middle">
             <div class="carousel">
               <div class="sui-carousel slide">
-                <!--              <ol class="carousel-indicators">-->
-                <!--                <li data-target="#myCarousel" data-slide-to="0" ></li>-->
-                <!--                <li data-target="#myCarousel" data-slide-to="1" class="active"></li>-->
-                <!--                <li data-target="#myCarousel" data-slide-to="2"></li>-->
-                <!--              </ol>-->
                 <div class="carousel-inner" style="min-width: 100%;max-width: 100%">
-                  <!--                <div class="active item">-->
-                  <!--                  <img src="@/assets/img/lunbo2.png"/>-->
-                  <!--                </div>-->
-                  <!--                <div class="item">-->
-                  <!--                  <img src="@/assets/img/lunbo2.png"/>-->
-                  <!--                </div>-->
-                  <!--                <div class="item">-->
-                  <!--                  <img src="@/assets/img/lunbo2.png"/>-->
-                  <!--                </div>-->
                   <Carousel autoplay v-model="carouselImage" loop>
                     <CarouselItem>
                       <a>
@@ -66,29 +52,6 @@
               </div>
             </div>
             <div class="data-list">
-              <!--            <List item-layout="vertical"  class="headline loading">-->
-              <!--              <ListItem v-for="item in data" :key="item.title" class="headline-item">-->
-              <!--                <ListItemMeta :avatar="item.avatar" :title="item.title" :description="item.description" />-->
-              <!--                {{ item.content }}-->
-              <!--                <template slot="action">-->
-              <!--                  <li>-->
-              <!--                    <Icon type="ios-star-outline" /> 123-->
-              <!--                  </li>-->
-              <!--                  <li>-->
-              <!--                    <Icon type="ios-thumbs-up-outline" /> 234-->
-              <!--                  </li>-->
-              <!--                  <li>-->
-              <!--                    <Icon type="ios-chatbubbles-outline" /> 345-->
-              <!--                  </li>-->
-              <!--                </template>-->
-              <!--                <template slot="extra">-->
-              <!--                  <img src="https://dev-file.iviewui.com/5wxHCQMUyrauMCGSVEYVxHR5JmvS7DpH/large" style="width: 280px">-->
-              <!--                </template>-->
-              <!--              </ListItem>-->
-              <!--            </List>-->
-              <!--            <div class="stop">-->
-              <!--              <a href="javascript:;">加载更多 <i class="fa fa-refresh" aria-hidden="true"></i></a>-->
-              <!--            </div>-->
               <ul id="data-list-down" class="headline loading">
                 <li class="headline-item" v-for="(item,index)  in info.articleList" :key="index">
 
@@ -107,7 +70,8 @@
                               @click="collection(item,index)">收藏</span>
                         <span class="attentionText" v-if="item.isCollection === '1'"
                               @click="unCollection(item.articleId,index)">取消收藏</span>
-                        <span class="beforeclose" style="cursor: pointer;"  v-if="item.isThumbup === '1'" @click="unThumbup(item,index)"><Icon
+                        <span class="beforeclose" style="cursor: pointer;" v-if="item.isThumbup === '1'"
+                              @click="unThumbup(item,index)"><Icon
                           type="ios-thumbs-up" size="20"/></span>
                         <span class="beforeclose" style="cursor: pointer;" v-if="item.isThumbup === '0'"
                               @click="thumbup(item,index)"><Icon type="ios-thumbs-up-outline" size="20"/></span>
@@ -119,152 +83,24 @@
                     <a style="text-decoration:none;color:#333">{{item.filterContent}}</a></p>
                 </li>
                 <div class="stop">
-                  <a @click="refreshList()">{{isRefreshtitle}}
-                    <Spin v-if="isRefresh" style="display: inline-block;"></Spin>
+                  <a @click="refreshArticleList()">{{isRefreshArticletitle}}
+                    <Spin v-if="isRefreshArticle" style="display: inline-block;"></Spin>
                   </a>
                 </div>
-
-                <!--                <li class="headline-item">-->
-                <!--                  <div class="fl indexImg">-->
-                <!--                    <img src=""/>-->
-                <!--                  </div>-->
-                <!--                  <div class="words">-->
-                <!--                    <h3>红旗H9全球首发 <span><img src="" class="vip"/></span></h3>-->
-                <!--                    <h5 class="author">-->
-                <!--                      <div class="fl">-->
-                <!--                        <span class="authorName"> <img src="@/assets/img/widget-photo.png" alt=""/> 玻璃通 </span>-->
-                <!--                        <span>1月8日 13:34</span>-->
-                <!--                      </div>-->
-                <!--                      <div class="fr attention">-->
-                <!--                        <span class="attentionText">收藏</span>-->
-                <!--                        <span class="beforeclose"> <i class="fa fa-times delete" aria-hidden="true"></i> <i-->
-                <!--                          class="nolike">不感兴趣</i> </span>-->
-                <!--                      </div>-->
-                <!--                      <div class="clearfix"></div>-->
-                <!--                    </h5>-->
-                <!--                  </div>-->
-                <!--                  <p class="content">-->
-                <!--                    作为一汽红旗品牌全新的行政级轿车，H9整体造型庄重典雅，前脸采用。。。作为一汽红旗品牌全新的行政级轿车，H9整体造型庄重典雅，前脸采用。。。-->
-                <!--                    作为一汽红旗品牌全新的行政级轿车，H9整体造型庄重典雅，前脸采用。。。</p></li>-->
-                <!--              <li class="headline-item">-->
-                <!--                <div class="fl indexImg">-->
-                <!--                  <img src=""/>-->
-                <!--                </div>-->
-                <!--                <div class="words">-->
-                <!--                  <h3>红旗H9全球首发 <span><img src="@/assets/img/widget-vip.png" class="vip"/></span></h3>-->
-                <!--                  <h5 class="author">-->
-                <!--                    <div class="fl">-->
-                <!--                      <span class="authorName"> <img src="@/assets/img/widget-photo.png" alt=""/> 玻璃通 </span>-->
-                <!--                      <span>6月12日 13：34</span>-->
-                <!--                    </div>-->
-                <!--                    <div class="fr attention">-->
-                <!--                      <span class="attentionText">收藏</span>-->
-                <!--                      <span class="beforeclose"> <i class="fa fa-times delete" aria-hidden="true"></i> <i-->
-                <!--                        class="nolike">不感兴趣</i> </span>-->
-                <!--                    </div>-->
-                <!--                    <div class="clearfix"></div>-->
-                <!--                  </h5>-->
-                <!--                </div>-->
-                <!--                <p class="content">-->
-                <!--                  作为一汽红旗品牌全新的行政级轿车，H9整体造型庄重典雅，前脸采用。。。</p></li>-->
-                <!--              <li class="headline-item">-->
-                <!--                <div class="fl indexImg">-->
-                <!--                  <img src="@/assets/img/H9.png"/>-->
-                <!--                </div>-->
-                <!--                <div class="words">-->
-                <!--                  <h3>红旗H9全球首发 <span><img src="@/assets/img/widget-vip.png" class="vip"/></span></h3>-->
-                <!--                  <h5 class="author">-->
-                <!--                    <div class="fl">-->
-                <!--                      <span class="authorName"> <img src="@/assets/img/widget-photo.png" alt=""/> 玻璃通 </span>-->
-                <!--                      <span>6月12日 13：34热门回答</span>-->
-                <!--                    </div>-->
-                <!--                    <div class="fr attention">-->
-                <!--                      <span class="attentionText">收藏</span>-->
-                <!--                      <span class="beforeclose"> <i class="fa fa-times delete" aria-hidden="true"></i> <i-->
-                <!--                        class="nolike">不感兴趣</i> </span>-->
-                <!--                    </div>-->
-                <!--                    <div class="clearfix"></div>-->
-                <!--                  </h5>-->
-                <!--                </div>-->
-                <!--                <p class="content"></p></li>-->
-                <!--              <li class="headline-item">-->
-                <!--                <div class="fl indexImg">-->
-                <!--                  <img src=""/>-->
-                <!--                </div>-->
-                <!--                <div class="words">-->
-                <!--                  <h3>红旗H9全球首发 <span><img src="@/assets/img/widget-vip.png" class="vip"/></span></h3>-->
-                <!--                  <h5 class="author">-->
-                <!--                    <div class="fl">-->
-                <!--                      <span class="authorName"> <img src="@/assets/img/widget-photo.png" alt=""/> 玻璃通 </span>-->
-                <!--                      <span>6月7日 10：34</span>-->
-                <!--                    </div>-->
-                <!--                    <div class="fr attention">-->
-                <!--                      <span class="attentionText">收藏</span>-->
-                <!--                      <span class="beforeclose"> <i class="fa fa-times delete" aria-hidden="true"></i> <i-->
-                <!--                        class="nolike">不感兴趣</i> </span>-->
-                <!--                    </div>-->
-                <!--                    <div class="clearfix"></div>-->
-                <!--                  </h5>-->
-                <!--                </div>-->
-                <!--                <p class="content">-->
-                <!--                  作为一汽红旗品牌全新的行政级轿车，H9整体造型庄重典雅，前脸采用。。。</p></li>-->
-                <!--              <li class="headline-item">-->
-                <!--                <div class="fl indexImg">-->
-                <!--                  <img src="@/assets/img/H9.png"/>-->
-                <!--                </div>-->
-                <!--                <div class="words">-->
-                <!--                  <h3>红旗H9全球首发 <span><img src="@/assets/img/widget-vip.png" class="vip"/></span></h3>-->
-                <!--                  <h5 class="author">-->
-                <!--                    <div class="fl">-->
-                <!--                      <span class="authorName"> <img src="@/assets/img/widget-photo.png" alt=""/> 玻璃通 </span>-->
-                <!--                      <span>6月12日 13：34</span>-->
-                <!--                    </div>-->
-                <!--                    <div class="fr attention">-->
-                <!--                      <span class="attentionText">收藏</span>-->
-                <!--                      <span class="beforeclose"> <i class="fa fa-times delete" aria-hidden="true"></i> <i-->
-                <!--                        class="nolike">不感兴趣</i> </span>-->
-                <!--                    </div>-->
-                <!--                    <div class="clearfix"></div>-->
-                <!--                  </h5>-->
-                <!--                </div>-->
-                <!--                <p class="content"></p></li>-->
-                <!--              <li class="headline-item">-->
-                <!--                <div class="fl indexImg">-->
-                <!--                  <img src=""/>-->
-                <!--                </div>-->
-                <!--                <div class="words">-->
-                <!--                  <h3>红旗H9全球首发 <span><img src="@/assets/img/widget-vip.png" class="vip"/></span></h3>-->
-                <!--                  <h5 class="author">-->
-                <!--                    <div class="fl">-->
-                <!--                      <span class="authorName"> <img src="@/assets/img/widget-photo.png" alt=""/> 玻璃通 </span>-->
-                <!--                      <span>6月7日 10：34</span>-->
-                <!--                    </div>-->
-                <!--                    <div class="fr attention">-->
-                <!--                      <span class="attentionText">收藏</span>-->
-                <!--                      <span class="beforeclose"> <i class="fa fa-times delete" aria-hidden="true"></i> <i-->
-                <!--                        class="nolike">不感兴趣</i> </span>-->
-                <!--                    </div>-->
-                <!--                    <div class="clearfix"></div>-->
-                <!--                  </h5>-->
-                <!--                </div>-->
-                <!--                <p class="content">-->
-                <!--                  作为一汽红旗品牌全新的行政级轿车，H9整体造型庄重典雅，前脸采用。。。</p></li>-->
               </ul>
               <ul id="loaded" class="headline">
               </ul>
             </div>
-            <!-- <script src="@/assets/data-list.js" type="text/javascript"></script> -->
           </div>
           <div class="fl right">
             <div class="activity">
-              <div class="acti">
-                <a> <img src="@/assets/img/activity2.png" alt="活动一"/></a>
-              </div>
-              <div class="acti">
-                <a><img src="@/assets/img/activity3.png" alt="活动一"/></a>
-              </div>
+            <ul class="gatheringList">
+              <li class="acti" v-for="(item,index) in info.gatheringList" :key="index">
+                <a v-if="index<2" :href="hrefUrl" @click="viewGathering(item.gatheringId)" target="_blank"><img
+                  style="width: 300px;height: 196px;" :src="item.gatheringImage"/></a>
+              </li>
+            </ul>
             </div>
-
             <div class="question-list">
               <h3 class="title">热门回答</h3>
               <div class="lists">
@@ -298,52 +134,23 @@
               <h3 class="title">活动日历</h3>
               <div class="list">
                 <ul>
-                  <li class="list-item"><p class="list-time"> 2017/06/30 北京</p>
+                  <li class="list-item" v-for="(item,index) in info.gatheringList" :key="index">
+                    <p class="list-time"> {{item.startDate}} {{item.address}}</p>
                     <div class="list-content clearfix">
                       <div class="fl img">
-                        <img src="@/assets/img/widget-simple.png" alt=""/>
+                        <img style="width: 60px;height: 34px;" :src="item.gatheringImage" alt=""/>
                       </div>
                       <div>
-                        <p>在线峰会 | 前端开发重难点技术剖析与创新实践</p>
-                      </div>
-                    </div>
-                  </li>
-                  <li class="list-item"><p class="list-time"> 2017/06/30 北京</p>
-                    <div class="list-content clearfix">
-                      <div class="fl img">
-                        <img src="@/assets/img/widget-simple.png" alt=""/>
-                      </div>
-                      <div>
-                        <p>在线峰会 | 前端开发重难点技术剖析与创新实践</p>
-                      </div>
-                    </div>
-                  </li>
-                  <li class="list-item"><p class="list-time"> 2017/06/30 北京</p>
-                    <div class="list-content clearfix">
-                      <div class="fl img">
-                        <img src="@/assets/img/widget-simple.png" alt=""/>
-                      </div>
-                      <div>
-                        <p>在线峰会 | 前端开发重难点技术剖析与创新实践</p>
-                      </div>
-                    </div>
-                  </li>
-                  <li class="list-item"><p class="list-time"> 2017/06/30 北京</p>
-                    <div class="list-content clearfix">
-                      <div class="fl img">
-                        <img src="@/assets/img/widget-simple.png" alt=""/>
-                      </div>
-                      <div>
-                        <p>在线峰会 | 前端开发重难点技术剖析与创新实践</p>
+                        <p>{{item.title}}</p>
                       </div>
                     </div>
                   </li>
                 </ul>
-                <a class="sui-btn btn-block btn-bordered btn-more">查看更多</a>
+                <a class="sui-btn btn-block btn-bordered btn-more" @click="refreshGatheingList()">{{isRefreshGatheringtitle}}
+                  <Spin v-if="isRefreshGatering" style="display: inline-block;"></Spin></a>
               </div>
             </div>
 
-            <!-- <link rel="import" href=".@/assets/.@/assets/modules/ui-modules/footer/footer.html?__inline"> -->
           </div>
         </div>
       </div>
@@ -362,12 +169,18 @@
         unthumbup,
         searchCollection
     } from '@/pages/api/article'
+    import {getGathering} from '@/pages/api/gathering'
 
     export default {
         data() {
             return {
-                isRefresh: false,
-                isRefreshtitle: "换一批",
+                hrefUrl: '',
+                isRefreshArticle: false,
+                isRefreshGatering: false,
+                isRefreshQuestion: false,
+                isRefreshQuestiontitle: "查看更多",
+                isRefreshArticletitle: "换一批",
+                isRefreshGatheringtitle: "查看更多",
                 carouselImage: 0,
                 isActive: false,
                 info: {
@@ -380,7 +193,15 @@
                         total: 0
                     },
                     categoryList: [],
-                    articleList: []
+                    articleList: [],
+                    gatheringList: [],
+                    gatheringParams: {
+                        isHost: '0',
+                        state: '',
+                        page: 1,
+                        size: 5,
+                        total: 0
+                    },
                 },
             }
         },
@@ -402,7 +223,7 @@
                 this.$Loading.start();
                 unthumbup(item.articleId).then((res) => {
                     if (res.data.code === 20000) {
-                        this.$Message.success('已取消');
+                        this.$Message.success('已取消点赞');
                         this.info.articleList[index].isThumbup = "0"
                     }
                     this.$Loading.finish();
@@ -430,7 +251,6 @@
                     this.$Message.error('收藏失败');
                     this.$Loading.error();
                 })
-
             },
             unCollection(articleId, index) {
                 this.$Loading.start();
@@ -467,7 +287,37 @@
                 await this.categoryHandel(index, id)
                 this.getLoadData()
             },
-            loadData() {
+            getGathering() {
+                this.$Loading.start();
+                let params = {
+                    isHost: '1',
+                    state: '',
+                    page: this.info.gatheringParams.page,
+                    size: this.info.gatheringParams.size
+                }
+                getGathering(params).then((res) => {
+                    if (res) {
+                        let rowList = res.data.data.rows
+                        let gatheringList = []
+                        for (let i = 0; i < rowList.length; i++) {
+                            const {gatheringId, title, startDate, gatheringImage,address} = rowList[i]
+                            gatheringList.push({
+                                address: address,
+                                gatheringId: gatheringId,
+                                title: title,
+                                startDate: startDate,
+                                gatheringImage: gatheringImage
+                            })
+                        }
+                        this.info.gatheringList = gatheringList
+                        this.info.gatheringParams.total = res.data.data.total
+                    }
+                    this.isRefreshGatering = false
+                    this.isRefreshGatheringtitle = "查看更多"
+                    this.$Loading.finish();
+                })
+            },
+            getCategory() {
                 this.$Loading.start();
                 this.clearData()
                 getCategory().then((res) => { // 获取分类名
@@ -486,9 +336,17 @@
                     this.$Loading.error();
                 })
             },
-            refreshData() {
-                this.isRefresh = true
-                this.isRefreshtitle = "加载中"
+            viewGathering(id) {
+                this.hrefUrl = 'http://localhost:10002/#/gathering/detail?gatheringId=' + id
+            },
+            loadData() {
+                this.clearData()
+                this.getCategory()
+                this.getGathering()
+            },
+            refreshArticleData() {
+                this.isRefreshArticle = true
+                this.isRefreshArticletitle = "加载中"
                 let total = this.info.params.total
                 let size = this.info.params.size
                 let index = Math.ceil(total / size)
@@ -500,9 +358,27 @@
                     this.info.params.page = 1
                 }
             },
-            async refreshList() {
-                await this.refreshData()
+            async refreshArticleList() {
+                await this.refreshArticleData()
                 this.getLoadData()
+            },
+            refreshGatheingData(){
+                this.isRefreshGatering = true
+                this.isRefreshGatheringtitle = "加载中"
+                let total = this.info.gatheringParams.total
+                let size = this.info.gatheringParams.size
+                let index = Math.ceil(total / size)
+                let page = this.info.gatheringParams.page
+                if (page < index) {
+                    page++
+                    this.info.gatheringParams.page = page
+                } else {
+                    this.info.gatheringParams.page = 1
+                }
+            },
+            async refreshGatheingList(){
+                await this.refreshGatheingData()
+                this.getGathering()
             },
             getLoadData() {
                 this.$Loading.start();
@@ -514,9 +390,8 @@
                     size: this.info.params.size
                 }
                 findSearchArticle(params).then((res) => { // 根据分类名查询信息
-                    this.$Loading.finish();
-                    this.isRefresh = false
-                    this.isRefreshtitle = "换一批"
+                    this.isRefreshArticle = false
+                    this.isRefreshArticletitle = "换一批"
                     let data = res.data.data.rows
                     this.info.params.total = Number(res.data.data.total)
                     if (data) {
@@ -538,6 +413,7 @@
                         }
                         this.info.articleList = list
                     }
+                    this.$Loading.finish();
                 }).catch(error => {
                     this.$Loading.error();
                 })
@@ -551,4 +427,6 @@
         }
     }
 </script>
-
+<style>
+  .gatheringList li{list-style-type:none}
+</style>

@@ -30,7 +30,7 @@
                   写文章 </a></li>
                 <li>
                   <Dropdown>
-                    <a href="javascript:void(0)" target="_blank" class="homego">
+                    <a class="homego">
                       <Avatar :src="user.userImage"/>
                       <span style="font-size: 16px">{{user.userName}}</span>
                       <Icon type="ios-arrow-down"></Icon>
