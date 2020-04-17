@@ -182,7 +182,7 @@
                 isRefreshArticletitle: "换一批",
                 isRefreshGatheringtitle: "查看更多",
                 carouselImage: 0,
-                isActive: false,
+                isActive: "",
                 info: {
                     params: {
                         categoryId: '',

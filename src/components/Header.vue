@@ -25,45 +25,22 @@
                 <!--                                <span class="btn-search fa fa-search"></span>-->
               </form>
               <div class="sui-nav pull-right info">
-                <li><a @click="jumpAdd" class="notice">
+                <li><a @click="jumpAdd" class="notice" :href="hrefUrl" target="_blank">
                   <Icon type="ios-leaf-outline" size="30"/>
                   写文章 </a></li>
                 <li>
-                  <Dropdown>
-                    <a class="homego">
+                  <Dropdown @on-click="userInfo">
+                    <span class="homego">
                       <Avatar :src="user.userImage"/>
                       <span style="font-size: 16px">{{user.userName}}</span>
-                      <Icon type="ios-arrow-down"></Icon>
-                    </a>
+                    </span>
                     <DropdownMenu slot="list">
-                      <!--                      <DropdownItem divided>个人信息</DropdownItem>-->
-                      <DropdownItem divided>退出登录</DropdownItem>
+                      <DropdownItem name="person" divided>个人信息</DropdownItem>
+                      <DropdownItem name="logout" divided>退出登录</DropdownItem>
                     </DropdownMenu>
                   </Dropdown>
-                  <!--                  <Dropdown>-->
-                  <!--                    <a href="javascript:void(0)">-->
-                  <!--                      下拉菜单-->
-                  <!--                      <Icon type="ios-arrow-down"></Icon>-->
-                  <!--                    </a>-->
-                  <!--                    <DropdownMenu slot="list">-->
-                  <!--                      <DropdownItem>驴打滚</DropdownItem>-->
-                  <!--                      <DropdownItem>炸酱面</DropdownItem>-->
-                  <!--                      <DropdownItem disabled>豆汁儿</DropdownItem>-->
-                  <!--                      <DropdownItem>冰糖葫芦</DropdownItem>-->
-                  <!--                      <DropdownItem divided>北京烤鸭</DropdownItem>-->
-                  <!--                    </DropdownMenu>-->
-                  <!--                  </Dropdown>-->
                 </li>
               </div>
-              <!--              <div class="sui-nav pull-right info" v-if="user.name!==undefined">-->
-              <!--                <li><a href="/manager" target="_blank" class="notice">{{user.name}}</a></li>-->
-              <!--                <li><a @click="logout" class="notice">退出登录</a></li>-->
-              <!--                <li><a href="/manager" class="homego"><img :src="user.avatar" width="50px" height="50px" :alt="user.name"></a>-->
-              <!--                </li>-->
-              <!--              </div>-->
-              <!--              <div class="sui-nav pull-right info" v-if="user.name===undefined">-->
-              <!--                <router-link to="/login">登录</router-link>-->
-              <!--              </div>-->
             </div>
           </div>
         </div>
@@ -88,7 +65,8 @@
         data() {
             return {
                 isShowAdd: true,
-                query:'',
+                hrefUrl: '',
+                query: '',
                 user: {
                     userName: '',
                     userId: '',
@@ -97,17 +75,23 @@
             }
         },
         methods: {
-            clearQuery(){
+            clearQuery() {
                 this.query = ''
             },
-            doSearch(){
-              this.$emit("backQueryHandel",this.query)
+            doSearch() {
+                this.$emit("backQueryHandel", this.query)
             },
             jumpAdd() {
-                const path = this.$route.path
-                // console.log(path)
-                if (path !== '/add') {
-                    this.$router.push({path: '/add'})
+                this.hrefUrl = 'http://localhost:10002/#/add'
+            },
+            userInfo(name) {
+                if (name === 'person') {
+                    window.open("http://localhost:10002/#/person","person_blank_" + Math.random())
+                }
+                if(name === 'logout'){
+                    window.localStorage.removeItem('USER')
+                    window.localStorage.removeItem('token')
+                    window.location.href = 'http://localhost:10002/'
                 }
             },
             loadData() {
@@ -122,3 +106,8 @@
         }
     }
 </script>
+<style scoped>
+  .wrapper {
+    overflow: visible;
+  }
+</style>

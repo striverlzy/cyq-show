@@ -9,6 +9,7 @@ export function toSubmit(params) {
 
 // 多条件分页查询
 export function findSearchArticle(params = {
+  userId: '',
   categoryId: '',
   filterContent: '',
   title: '',
