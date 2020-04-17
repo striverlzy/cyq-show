@@ -266,11 +266,11 @@
         }
     }
 </script>
-<style>
+<style lang="less" scoped>
   .quill-editor {
-    min‐height: 200px;
-    max‐height: 400px;
-    overflow‐y: auto;
+    /deep/ .ql-container{
+      height: 700px;
+    }
   }
 
 </style>
