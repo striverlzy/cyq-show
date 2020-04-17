@@ -1,17 +1,25 @@
 <template>
   <div>
-    <Header></Header>
+    <Header ref="setQueryHandel" @backQueryHandel="doSearch"></Header>
     <div class="wrapper activities">
       <div class="activity-card-list">
         <div class="top-title">
-          <h4 class="latest" @click="cnewState()" :style="newState">最新活动</h4>
-          <h4 class="latest" @click="chotState()" :style="hotState">最热活动</h4>
-          <h4 class="latest" @click="cstopState()" :style="stopState">已结束活动</h4>
+          <ul class="gatheringMenu">
+            <li v-for="(item,index) in menus"
+                :key="index"
+                class="latest"
+                @click="changeState(index,item)"
+                :class="{ active:index==isActive }">{{item.name}}
+            </li>
+          </ul>
+          <!--          <h4 class="latest" @click="cnewState()" :style="newState">最新活动</h4>-->
+          <!--          <h4 class="latest" @click="chotState()" :style="hotState">最热活动</h4>-->
+          <!--          <h4 class="latest" @click="cstopState()" :style="stopState">已结束活动</h4>-->
           <div class="clearfix"></div>
         </div>
-        <div class="activity-list">
-          <ul class="activity" style="text-align: left" v-for="(item,index)  in info.gatheringList" :key="index">
-            <li class="activity-item">
+        <div class="activity-list" style="text-align: left">
+          <ul class="activity">
+            <li class="activity-item" v-for="(item,index)  in info.gatheringList" :key="index">
               <div class="activity-inner">
                 <a @click="getDetail(item)"></a>
                 <div class="img" style="width: 277px;height: 181px">
@@ -45,13 +53,32 @@
     export default {
         data() {
             return {
-                newState: '',
-                hotState: '',
-                stopState: '',
+                isActive: 0,
                 hrefUrl: '',
+                menus: [
+                    {
+                        id: '1',
+                        name: "最新活动",
+                        isHost: '0',
+                        state: '0'
+                    },
+                    {
+                        id: '2',
+                        name: "最热活动",
+                        isHost: '1',
+                        state: '0'
+                    },
+                    {
+                        id: '3',
+                        name: "已结束活动",
+                        isHost: '0',
+                        state: '1'
+                    }
+                ],
                 info: {
                     gatheringList: [],
                     params: {
+                        detail: '',
                         isHost: '0',
                         gatheringId: '',
                         state: '',
@@ -65,37 +92,32 @@
             }
         },
         methods: {
-           async cnewState() { // 最新活动
-                this.newState = 'border-bottom: 2px solid #e64620;'
-                this.hotState = ''
-                this.stopState = ''
-                await this.changeParam("0","0");
+            async changeState(index, item) {
+                this.$refs.setQueryHandel.clearQuery()
+                this.isActive = index
+                await this.changeParam(item.isHost, item.state)
                 this.getLoadData()
             },
-            async chotState() { // 最热活动
-                this.newState = ''
-                this.hotState = 'border-bottom: 2px solid #e64620;'
-                this.stopState = ''
-                await this.changeParam("1","0");
-                this.getLoadData()
+            changeContent(query) {
+                this.info.params.detail = query
             },
-            async cstopState() { // 已结束活动
-                this.newState = ''
-                this.hotState = ''
-                this.stopState = 'border-bottom: 2px solid #e64620;'
-                await this.changeParam("0","1");
+            async doSearch(query) {
+
+                await this.changeContent(query)
                 this.getLoadData()
             },
             getDetail(item) {
                 this.hrefUrl = 'http://localhost:10002/#/gathering/detail?gatheringId=' + item.gatheringId
             },
-            changeParam(isHost,state){
+            changeParam(isHost, state) {
+                this.info.params.detail = ''
                 this.info.params.isHost = isHost
                 this.info.params.state = state
             },
             getLoadData() {
                 this.$Loading.start();
                 let params = {
+                    detail: this.info.params.detail,
                     isHost: this.info.params.isHost,
                     state: this.info.params.state,
                     page: this.info.params.page,
@@ -110,7 +132,7 @@
                 })
             },
             loadData() {
-                this.cnewState()
+                this.getLoadData()
             }
         },
         created() {
@@ -121,3 +143,17 @@
         }
     }
 </script>
+<style scoped>
+  .gatheringMenu li {
+    list-style-type: none;
+  }
+
+  .active {
+    border-bottom: 2px solid #e64620;
+    padding-left: 30px;
+    margin-right: 10px;
+    cursor: pointer;
+    /*border-bottom: 2px solid #e64620;*/
+    font-size: 16px;
+  }
+</style>

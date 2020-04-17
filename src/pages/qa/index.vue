@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header></Header>
+    <Header ref="setQueryHandel" @backQueryHandel="doSearch"></Header>
     <div class="wrapper qa-content">
       <div class="fl left-list">
         <div class="tab-content">
@@ -105,7 +105,7 @@
     export default {
         data() {
             return {
-                isActive: "",
+                isActive: 0,
                 menus: [
                     {state: "1", name: "最新回答"},
                     {state: "2", name: "最热回答"},
@@ -127,11 +127,19 @@
             }
         },
         methods: {
+            async doSearch(query) {
+                await this.changeContent(query)
+                this.getLoadData(this.isActive+1, true)
+            },
+            changeContent(query){
+                this.params.content = query
+            },
             changePage(item) {
                 this.params.page = item
                 this.getLoadData(this.isActive+1, true)
             },
             menuClickHandel(index, item) {
+                this.$refs.setQueryHandel.clearQuery()
                 this.isActive = index
                 this.getLoadData(item, false)
             },

@@ -4,6 +4,7 @@ const baseUrl = 'gathering/gathering'
 
 // 多条件分页查询
 export function getGathering(params = {
+  detail: '',
   isHost: '',
   state: '',
   page: null,

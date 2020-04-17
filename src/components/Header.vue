@@ -5,7 +5,7 @@
         <div class="wrapper">
           <div class="sui-navbar">
             <div class="navbar-inner">
-              <a href="index-logined.html" class="sui-brand">
+              <a href="#" class="sui-brand">
                 <!--                <Icon type="ios-car-outline" size="30"/>-->
                 <img style="width: 50px;height: 40px" src="static/car.ico">
               </a>
