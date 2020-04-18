@@ -12,9 +12,6 @@
                 :class="{ active:index==isActive }">{{item.name}}
             </li>
           </ul>
-          <!--          <h4 class="latest" @click="cnewState()" :style="newState">最新活动</h4>-->
-          <!--          <h4 class="latest" @click="chotState()" :style="hotState">最热活动</h4>-->
-          <!--          <h4 class="latest" @click="cstopState()" :style="stopState">已结束活动</h4>-->
           <div class="clearfix"></div>
         </div>
         <div class="activity-list" style="text-align: left">
@@ -102,7 +99,6 @@
                 this.info.params.detail = query
             },
             async doSearch(query) {
-
                 await this.changeContent(query)
                 this.getLoadData()
             },

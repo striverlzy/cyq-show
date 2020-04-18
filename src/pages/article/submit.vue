@@ -21,7 +21,19 @@
           <div class="fl middle">
             <div class="carousel">
               <div class="sui-carousel slide">
-                <Input v-model="title" placeholder="标题"/>
+                <table style="width: 100%">
+                  <tr style="width: 100%">
+                    <td style="width: 65%"><Input v-model="title"  placeholder="标题"/> </td>
+                    <td style="width: 35%"> <Select v-model="categoryId" class="title_select" @on-change="selectHandel" :label-in-value="true"
+                                                    placeholder="请选择标签">
+                      <Option v-for="item in info.categoryList" :value="item.categoryId" :key="item.categoryId">
+                        {{item.categoryName }}
+                      </Option>
+                    </Select></td>
+                  </tr>
+                </table>
+
+
                 <quill-editor
                   v-model="content"
                   ref="myQuillEditor"
@@ -34,12 +46,7 @@
               </div>
             </div>
             <div class="data-list">
-              <Select v-model="categoryId" style="width:260px" @on-change="selectHandel" :label-in-value="true"
-                      placeholder="请选择标签">
-                <Option v-for="item in info.categoryList" :value="item.categoryId" :key="item.categoryId">
-                  {{item.categoryName }}
-                </Option>
-              </Select>
+
               <Button type="primary" @click="submit">发表</Button>
             </div>
           </div>
@@ -202,7 +209,7 @@
             },
             submit() {
                 let userInfo = window.localStorage.getItem('USER')
-                let userList= JSON.parse(userInfo)
+                let userList = JSON.parse(userInfo)
                 let params = {
                     userId: userList.userId || '',
                     userImage: userList.userImage || '',
@@ -213,7 +220,7 @@
                     content: this.content,
                     filterContent: this.filterContent
                 }
-                console.log("params",params)
+                console.log("params", params)
                 this.$Loading.start();
                 toSubmit(params).then((res) => {
                     if (res.data.code === 20000) {
@@ -268,9 +275,24 @@
 </script>
 <style lang="less" scoped>
   .quill-editor {
-    /deep/ .ql-container{
+    /deep/ .ql-container {
       height: 700px;
     }
+  }
+
+  .title_input {
+    /deep/ .ivu-input {
+      display: inline;
+      width: 65%;
+    }
+
+    .title_select {
+      /deep/ .ivu-select-selection {
+        display: inline;
+        width: 35%;
+      }
+    }
+
   }
 
 </style>

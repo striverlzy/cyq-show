@@ -22,7 +22,7 @@
         },
         methods: {
             getLoadData() {
-                let id = "1238074596201205760"
+                let id = "1251352989004861440"
                 getArticleById(id).then((res) =>{
                     console.info("getArticleById res",res.data.data)
                     this.content = res.data.data.content
