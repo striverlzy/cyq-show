@@ -15,7 +15,7 @@
         </div>
       </div>
 
-      <div class="tranForm1">
+      <div class="tranForm1" style="display: none">
         <Form :model="formItem" :label-width="80">
         <FormItem label="Input">
           <Input v-model="formItem.input" placeholder="Enter something..."></Input>
@@ -89,7 +89,6 @@
       width: 800px;
       height: 300px;
       margin: 0 auto;
-      display: none;
       .transaction{
         margin: 0 50px;
         width: 300px;

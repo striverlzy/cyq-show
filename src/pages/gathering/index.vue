@@ -103,7 +103,7 @@
                 this.getLoadData()
             },
             getDetail(item) {
-                this.hrefUrl = 'http://localhost:10002/#/gathering/detail?gatheringId=' + item.gatheringId
+                this.hrefUrl = 'http://localhost:10002/gathering/detail?gatheringId=' + item.gatheringId
             },
             changeParam(isHost, state) {
                 this.info.params.detail = ''
@@ -130,10 +130,12 @@
             loadData() {
                 this.getLoadData()
             }
-        },
+        }
+        ,
         created() {
             this.loadData()
-        },
+        }
+        ,
         components: {
             Header
         }

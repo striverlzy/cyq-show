@@ -7,7 +7,7 @@
             <div class="navbar-inner">
               <a href="#" class="sui-brand">
                 <!--                <Icon type="ios-car-outline" size="30"/>-->
-                <img style="width: 50px;height: 40px" src="static/car.ico">
+                <img style="width: 50px;height: 40px" src="http://cyq-test.oss-cn-beijing.aliyuncs.com/car.ico">
               </a>
               <ul class="sui-nav">
                 <router-link to="/" tag="li" active-class="active" exact><a>车友圈</a>
@@ -82,11 +82,11 @@
                 this.$emit("backQueryHandel", this.query)
             },
             jumpAdd() {
-                this.hrefUrl = 'http://localhost:10002/#/add'
+                this.hrefUrl = 'http://localhost:10002/add'
             },
             userInfo(name) {
                 if (name === 'person') {
-                    window.open("http://localhost:10002/#/person","person_blank_" + Math.random())
+                    window.open("http://localhost:10002/person","person_blank_" + Math.random())
                 }
                 if(name === 'logout'){
                     window.localStorage.removeItem('USER')

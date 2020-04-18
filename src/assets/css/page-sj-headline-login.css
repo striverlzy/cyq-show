@@ -544,7 +544,7 @@ header {
 }
 
 @media (min-width: 1200px) {
-  .sj-content .right-content .right {
+  .sj-content .right-content .rights {
     width: 300px;
   }
 }

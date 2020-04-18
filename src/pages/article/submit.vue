@@ -50,96 +50,7 @@
               <Button type="primary" @click="submit">发表</Button>
             </div>
           </div>
-          <div class="fl right">
-            <div class="activity">
-              <div class="acti">
-                <img src="@/assets/img/activity2.png" alt="活动一"/>
-              </div>
-              <div class="acti">
-                <img src="@/assets/img/activity3.png" alt="活动一"/>
-              </div>
-            </div>
-
-            <div class="question-list">
-              <h3 class="title">热门回答</h3>
-              <div class="lists">
-                <ul>
-                  <li class="list-item"><p class="list-title">红旗H9值得入手吗？大家怎么看？</p>
-                    <p class="authorInfo"><span class="authorName"><img src="@/assets/img/widget-photo.png"
-                                                                        alt=""/>于无声处</span> <span>1月8日 20:19</span></p>
-                  </li>
-                  <li class="list-item"><p class="list-title">20万居家SUV大家有什么推荐吗？</p>
-                    <p class="authorInfo"><span class="authorName"><img src="@/assets/img/widget-myphoto.jpg"
-                                                                        alt=""/>白菜白了又菜</span> <span>1月6日 10:28</span>
-                    </p>
-                  </li>
-                  <li class="list-item"><p class="list-title">雨刮器多久换一次比较合适？</p>
-                    <p class="authorInfo"><span class="authorName"><img src="@/assets/img/widget-movie.png"
-                                                                        alt=""/>清风小神童</span> <span>1月7日 14:43</span></p>
-                  </li>
-                  <li class="list-item"><p class="list-title">汽车下了个杀毒软件删完东西之后360全息影像不好使怎么回事？</p>
-                    <p class="authorInfo"><span class="authorName"><img src="@/assets/img/widget-photo.png"
-                                                                        alt=""/>玻璃筒</span> <span>1月8日 13:34</span></p>
-                  </li>
-                  <li class="list-item"><p class="list-title">汽车下了个杀毒软件删完东西之后360全息影像不好使怎么回事？</p>
-                    <p class="authorInfo"><span class="authorName"><img src="@/assets/img/widget-photo.png"
-                                                                        alt=""/>玻璃筒</span> <span>1月8日 13:34</span></p>
-                  </li>
-                </ul>
-                <a class="sui-btn btn-block btn-bordered btn-more">查看更多</a>
-              </div>
-            </div>
-            <div class="activity-list">
-              <h3 class="title">活动日历</h3>
-              <div class="list">
-                <ul>
-                  <li class="list-item"><p class="list-time"> 2017/06/30 北京</p>
-                    <div class="list-content clearfix">
-                      <div class="fl img">
-                        <img src="@/assets/img/widget-simple.png" alt=""/>
-                      </div>
-                      <div>
-                        <p>在线峰会 | 前端开发重难点技术剖析与创新实践</p>
-                      </div>
-                    </div>
-                  </li>
-                  <li class="list-item"><p class="list-time"> 2017/06/30 北京</p>
-                    <div class="list-content clearfix">
-                      <div class="fl img">
-                        <img src="@/assets/img/widget-simple.png" alt=""/>
-                      </div>
-                      <div>
-                        <p>在线峰会 | 前端开发重难点技术剖析与创新实践</p>
-                      </div>
-                    </div>
-                  </li>
-                  <li class="list-item"><p class="list-time"> 2017/06/30 北京</p>
-                    <div class="list-content clearfix">
-                      <div class="fl img">
-                        <img src="@/assets/img/widget-simple.png" alt=""/>
-                      </div>
-                      <div>
-                        <p>在线峰会 | 前端开发重难点技术剖析与创新实践</p>
-                      </div>
-                    </div>
-                  </li>
-                  <li class="list-item"><p class="list-time"> 2017/06/30 北京</p>
-                    <div class="list-content clearfix">
-                      <div class="fl img">
-                        <img src="@/assets/img/widget-simple.png" alt=""/>
-                      </div>
-                      <div>
-                        <p>在线峰会 | 前端开发重难点技术剖析与创新实践</p>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-                <a class="sui-btn btn-block btn-bordered btn-more">查看更多</a>
-              </div>
-            </div>
-
-            <!-- <link rel="import" href=".@/assets/.@/assets/modules/ui-modules/footer/footer.html?__inline"> -->
-          </div>
+          <Right></Right>
         </div>
       </div>
     </div>
@@ -148,6 +59,7 @@
 </template>
 
 <script>
+    import Right from '@/components/Right'
     import {toSubmit} from '@/pages/api/article'
     // import *  as '@/utils/filesUtils'
     import Header from '@/components/Header'
@@ -245,6 +157,7 @@
             onEditorChange({quill, html, text}) {
                 // console.log('editor change!', quill, html, text)
                 this.content = html
+                console.log("html",html)
                 let data1 = html.replace(/<[^>]+>/g, "")
                 if (data1) {
                     this.filterContent = data1.replace(/\s*/g, "")
@@ -269,7 +182,8 @@
                 })
         },
         components: {
-            Header
+            Header,
+            Right
         }
     }
 </script>
@@ -277,6 +191,7 @@
   .quill-editor {
     /deep/ .ql-container {
       height: 700px;
+      background-color: #ffffff;
     }
   }
 
