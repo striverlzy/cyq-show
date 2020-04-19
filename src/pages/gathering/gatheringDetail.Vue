@@ -14,7 +14,7 @@
           <p>举办地点： {{params.address}}</p>
           <p>报名人数：{{params.signNum}} </p>
           <p>报名截止：
-            <span v-if="!isEnd">
+            <span v-if="!isSignEnd">
           <span class="big">{{days}}</span>天 <span class="big">{{hours}}</span>时 <span
               class="big">{{minutes}}</span>分 <span
               class="big">{{seconds}}</span>秒
@@ -22,11 +22,12 @@
             <span v-else>{{params.signEnd}}</span>
           </p>
           <div class="join">
-            <button class="sui-btn btn-danger" v-if="!isEnd && !isSignUp" @click="signUp">立即报名</button>
+            <button class="sui-btn btn-danger" v-if="!isSignEnd && !isSignUp" @click="signUp">立即报名</button>
             <button class="sui-btn btn-danger" v-if="isSignUp" disabled>已报名</button>
-            <button class="sui-btn btn-danger" v-if="isEnd && !isSignUp" disabled>立即报名</button>
-            <span class="will" v-if="!isEnd">火热进行中</span>
-            <span class="will" v-if="isEnd">活动已结束</span>
+            <button class="sui-btn btn-danger" v-if="isSignEnd && !isSignUp" disabled>立即报名</button>
+            <span class="will" v-if="!isEnd && !isSignEnd">火热进行中</span>
+            <span class="will" v-if="!isEnd && isSignEnd">报名已截止</span>
+            <span class="will" v-if="isEnd">活动已截止</span>
           </div>
         </div>
       </div>
@@ -84,6 +85,7 @@
             return {
                 isSignUp: false,
                 isEnd: false,
+                isSignEnd: false,
                 gatheringId: '',
                 params: {},
                 startWeek: '',
@@ -93,6 +95,7 @@
                 minutes: 0,
                 seconds: 0,
                 signEnd: '',
+                endDate: '',
                 userId: ''
             }
         },
@@ -100,10 +103,15 @@
             //倒计时
             countTime() {
                 // 定义结束时间戳
-                const end = Date.parse(new Date(this.signEnd.replace(/-/, "/")))
+                const signEnd = Date.parse(new Date(this.signEnd.replace(/-/, "/")))
+                const end = Date.parse(new Date(this.endDate.replace(/-/, "/")))
                 // 定义当前时间戳
                 const now = Date.parse(new Date())
                 // 做判断当倒计时结束时都为0
+                if (now >= signEnd) {
+                    this.isSignEnd = true
+                    return
+                }
                 if (now >= end) {
                     this.isEnd = true
                     return
@@ -168,6 +176,7 @@
                     let endWeek = new Date(this.params.endDate.replace(/-/, "/")).getDay()
                     this.startWeek = "周" + day[startWeek]
                     this.endWeek = "周" + day[endWeek]
+                    this.endDate = this.params.endDate
                     this.signEnd = this.params.signEnd
                     this.$Loading.finish();
                 })

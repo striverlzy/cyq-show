@@ -13,48 +13,55 @@
           <div class="fl middle">
             <div class="carousel">
               <div class="sui-carousel slide">
-                <div class="ql-editor" v-html="content">{{content}}</div>
+                <div class="ql-editor" v-html="info.content">{{info.content}}</div>
                 <div class="dibulan">
                   <div class="art_mas">
                     <div class="art_img">
-                      <img src="http://cyq-test.oss-cn-beijing.aliyuncs.com/car.png">
+                      <img :src="info.userImage">
                     </div>
                     <div class="art_namebox">
                       <div class="art_name">
-                        <span>名字</span>
+                        <span>{{info.userName}}</span>
                       </div>
                       <div class="art_dec">
-                        <span>原创文章</span>
-                        <span>获赞</span>
-                        <span>访问量</span>
+                        <span>收藏{{info.collectionTotal}}</span>
+                        <span>获赞{{info.thumbup}}</span>
+                        <span>评论数{{info.commentTotal}}</span>
                       </div>
                     </div>
                   </div>
 
-                  <div class="userdo">
+                  <div class="userdo" @click="tocollection">
                     <div class="userdo_item">
                       <div class="icon">
-                        <img src="http://cyq-test.oss-cn-beijing.aliyuncs.com/car.png">
+                        <img src="http://cyq-test.oss-cn-beijing.aliyuncs.com/shoucang.png"
+                             v-if="info.isCollection === '0'"/>
+                        <img src="http://cyq-test.oss-cn-beijing.aliyuncs.com/shoucang_activity.png"
+                             v-if="info.isCollection === '1'"/>
+                      </div>
+                      <span>收藏</span>
+                    </div>
+                    <div class="userdo_item" @click="tothumbup">
+                      <div class="icon">
+                        <img src="http://cyq-test.oss-cn-beijing.aliyuncs.com/dianzan_activity.png"
+                             v-if="info.isThumbup === '1'"/>
+                        <img src="http://cyq-test.oss-cn-beijing.aliyuncs.com/dianzan.png"
+                             v-if="info.isThumbup === '0'"/>
                       </div>
                       <span>点赞</span>
                     </div>
                     <div class="userdo_item">
                       <div class="icon">
-                        <img src="http://cyq-test.oss-cn-beijing.aliyuncs.com/car.png">
+                        <img src="http://cyq-test.oss-cn-beijing.aliyuncs.com/pinglun.png"/>
                       </div>
-                      <span>评论</span>
+                      <span @click="isReply = !isReply">评论</span>
                     </div>
-                    <div class="userdo_item">
-                      <div class="icon">
-                        <img src="http://cyq-test.oss-cn-beijing.aliyuncs.com/car.png">
-                      </div>
-                      <span>收藏</span>
-                    </div>
+
                   </div>
 
-                  <div class="pinglun" >
-                    <Input v-model="value6" type="textarea" :rows="4" placeholder="Enter something..." />
-                    <Button type="primary">Primary</Button>
+                  <div class="pinglun" v-if="isReply">
+                    <Input v-model="reply" type="textarea" :rows="4" placeholder="我也来说一句..."/>
+                    <Button type="primary">发表评论</Button>
                   </div>
                 </div>
               </div>
@@ -62,8 +69,17 @@
             <div class="data-list">
               <ul id="data-list-down" class="headline loading">
                 <li class="headline-item" v-for="(item,index)  in model.articleList" :key="index">
-                  <div class="fl indexImg">
-                    <img src=""/>
+
+                  <div class="content">
+                    <table>
+                      <tr style="width: 100%;">
+                        <td style="width: 600px"><span
+                          style="text-decoration:none;color:#333">{{item.filterContent}}</span></td>
+                        <td style="width: 25px;float: right">
+                          <img style="cursor: pointer;width: 20px;height: 14px;" src="http://cyq-test.oss-cn-beijing.aliyuncs.com/dianzan.png"/>
+                        </td>
+                      </tr>
+                    </table>
                   </div>
                   <div class="words">
                     <h5 class="author">
@@ -74,8 +90,6 @@
                       <div class="clearfix"></div>
                     </h5>
                   </div>
-                  <p class="content">
-                    <span style="text-decoration:none;color:#333">{{item.filterContent}}</span></p>
                 </li>
               </ul>
 
@@ -108,8 +122,10 @@
     export default {
         data() {
             return {
+                isReply: false,
                 content: '',
                 articleId: '',
+                info: {},
                 model: {
                     params: {
                         categoryId: '',
@@ -121,16 +137,98 @@
                     },
                     articleList: []
                 },
-                value6: '',
+                reply: '',
             }
         },
         methods: {
+            tothumbup() {
+                if (this.info.isThumbup === '0') {
+                    this.thumbup()
+                }
+                if (this.info.isThumbup === '1') {
+                    this.unThumbup()
+                }
+            },
+            tocollection() {
+                if (this.info.isCollection === '0') {
+                    this.collection()
+                }
+                if (this.info.isCollection === '1') {
+                    this.unCollection()
+                }
+            },
+            thumbup() {
+                this.$Loading.start();
+                thumbup(this.info.articleId).then((res) => {
+                    if (res.data.code === 20000) {
+                        this.$Message.success('点赞成功');
+                        this.info.isThumbup = "1"
+                        this.info.thumbup++
+                        console.log("this.info.thumbup", this.info.thumbup)
+                    }
+                    this.$Loading.finish();
+                }).catch(error => {
+                    this.$Message.error('点赞失败');
+                    this.$Loading.error();
+                })
+            },
+            unThumbup() {
+                this.$Loading.start();
+                unthumbup(this.info.articleId).then((res) => {
+                    if (res.data.code === 20000) {
+                        this.$Message.success('已取消点赞');
+                        this.info.isThumbup = "0"
+                        this.info.thumbup--
+                    }
+                    this.$Loading.finish();
+                }).catch(error => {
+                    this.$Message.error('取消点赞失败');
+                    this.$Loading.error();
+                })
+            },
+            collection() {
+                this.$Loading.start();
+                let params = {
+                    articleId: this.info.articleId,
+                    articleTitle: this.info.articleTitle || '',
+                    userId: this.info.userId || '',
+                    userImage: this.info.userImage || '',
+                    userName: this.info.userName || ''
+                }
+                collectionArticle(params).then((res) => {
+                    if (res.data.code === 20000) {
+                        this.$Message.success('收藏成功');
+                        this.info.isCollection = "1"
+                        this.info.collectionTotal++
+                    }
+                    this.$Loading.finish();
+                }).catch(error => {
+                    this.$Message.error('收藏失败');
+                    this.$Loading.error();
+                })
+            },
+            unCollection() {
+                this.$Loading.start();
+                unCollection(this.info.articleId).then((res) => {
+                    if (res.data.code === 20000) {
+                        this.$Message.success('已取消收藏');
+                        this.info.isCollection = "0"
+                        this.info.collectionTotal--
+                    }
+                    this.$Loading.finish();
+                }).catch(error => {
+                    this.$Message.error('取消收藏失败');
+                    this.$Loading.error();
+                })
+            },
             getLoadData() {
                 getArticleById(this.articleId).then((res) => {
+                    console.log("res.data.data", res.data.data)
+                    this.info = res.data.data
                     this.content = res.data.data.content
                 })
             },
-            getReply(){
+            getReply() {
                 this.$Loading.start();
                 let params = {
                     categoryId: this.model.params.categoryId,
@@ -160,7 +258,7 @@
                             })
                         }
                         this.model.articleList = list
-                        console.info("this.model.articleList",this.model.articleList)
+                        console.info("this.model.articleList", this.model.articleList)
                     }
                     this.$Loading.finish();
                 }).catch(error => {
@@ -188,6 +286,18 @@
     }
 </script>
 <style lang="less" scoped>
+  .data-list .headline .headline-item {
+    padding: 30px 25px;
+  }
+
+  .data-list .headline .headline-item .content {
+    margin-top: 0;
+  }
+
+  .author {
+    float: right;
+  }
+
   .ql-editor {
     background: #ffffff;
   }
@@ -272,10 +382,11 @@
         background: #aaaaaa;
       }
     }
-    .pinglun{
+
+    .pinglun {
       margin: 10px 0;
 
-      /deep/Button{
+      /deep/ Button {
         float: right;
         margin-top: 5px;
       }

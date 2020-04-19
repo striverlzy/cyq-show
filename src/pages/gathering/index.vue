@@ -30,7 +30,8 @@
                     <p>城市：{{item.address}}</p>
                   </div>
                   <div class="fr btn">
-                    <span class="sui-btn btn-bao">立即报名</span>
+                    <button class="sui-btn btn-danger" v-if="!item.isSignUp" @click="signUp(item,index)">立即报名</button>
+                    <button class="sui-btn btn-danger" v-if="item.isSignUp" disabled>已报名</button>
                   </div>
                   <div class="clearfix"></div>
                 </div>
@@ -44,14 +45,16 @@
 </template>
 <script>
     import Header from '@/components/Header'
-    import {getGathering, signUp} from '@/pages/api/gathering'
+    import {getGathering, signUp, findRecord} from '@/pages/api/gathering'
     import '@/assets/css/page-sj-activity-index.css'
 
     export default {
         data() {
             return {
+                isSignUp: false,
                 isActive: 0,
                 hrefUrl: '',
+                userId: '',
                 menus: [
                     {
                         id: '1',
@@ -78,6 +81,7 @@
                         detail: '',
                         isHost: '0',
                         gatheringId: '',
+                        title: '',
                         state: '',
                         gatheringTitle: '',
                         userId: '',
@@ -89,6 +93,25 @@
             }
         },
         methods: {
+            signUp(item, index) {
+                this.$Loading.start();
+                let params = {
+                    gatheringId: item.gatheringId,
+                    gatheringTitle: item.title,
+                    userId: this.userId || '',
+                    page: 1,
+                    size: 1
+                }
+
+                signUp(params).then((res) => {
+                    if (res.data.code === 20000) {
+                        this.$Message.success('报名成功');
+                        this.info.gatheringList[index].isSignUp = true
+                        this.getLoadData()
+                    }
+                    this.$Loading.finish();
+                })
+            },
             async changeState(index, item) {
                 this.$refs.setQueryHandel.clearQuery()
                 this.isActive = index
@@ -120,22 +143,42 @@
                     size: this.info.params.size
                 }
                 getGathering(params).then((res) => {
-                    if (res) {
-                        this.info.gatheringList = res.data.data.rows
-                        this.info.params.total = res.data.data.total
+                    let resList = res.data.data.rows
+                    let gatheringList = []
+                    for (let i = 0; i < resList.length; i++) {
+                        let isSignUp = false
+                        const {signIds, startDate, gatheringId,gatheringImage, title, address} = resList[i]
+                        if(signIds){
+                            if (signIds.indexOf(this.userId) != -1) {
+                                isSignUp = true
+                            } else {
+                                isSignUp = false
+                            }
+                        }
+                        gatheringList.push({
+                            gatheringImage,
+                            startDate, gatheringId, title, address,
+                            isSignUp
+                        })
                     }
+                    this.info.gatheringList = gatheringList
+                    this.info.params.total = res.data.data.total
+
                     this.$Loading.finish();
                 })
             },
             loadData() {
                 this.getLoadData()
             }
-        }
-        ,
-        created() {
+        },
+        mounted() {
             this.loadData()
-        }
-        ,
+        },
+        created() {
+            let userInfo = window.localStorage.getItem('USER')
+            let userList = JSON.parse(userInfo)
+            this.userId = userList.userId
+        },
         components: {
             Header
         }

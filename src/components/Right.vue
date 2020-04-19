@@ -13,29 +13,15 @@
         <h3 class="title">热门回答</h3>
         <div class="lists">
           <ul>
-            <li class="list-item"><p class="list-title">红旗H9值得入手吗？大家怎么看？</p>
-              <p class="authorInfo"><span class="authorName"><img src="@/assets/img/widget-photo.png"
-                                                                  alt=""/>于无声处</span> <span>1月8日 20:19</span></p>
-            </li>
-            <li class="list-item"><p class="list-title">20万居家SUV大家有什么推荐吗？</p>
-              <p class="authorInfo"><span class="authorName"><img src="@/assets/img/widget-myphoto.jpg"
-                                                                  alt=""/>白菜白了又菜</span> <span>1月6日 10:28</span>
-              </p>
-            </li>
-            <li class="list-item"><p class="list-title">雨刮器多久换一次比较合适？</p>
-              <p class="authorInfo"><span class="authorName"><img src="@/assets/img/widget-movie.png"
-                                                                  alt=""/>清风小神童</span> <span>1月7日 14:43</span></p>
-            </li>
-            <li class="list-item"><p class="list-title">汽车下了个杀毒软件删完东西之后360全息影像不好使怎么回事？</p>
-              <p class="authorInfo"><span class="authorName"><img src="@/assets/img/widget-photo.png"
-                                                                  alt=""/>玻璃筒</span> <span>1月8日 13:34</span></p>
-            </li>
-            <li class="list-item"><p class="list-title">汽车下了个杀毒软件删完东西之后360全息影像不好使怎么回事？</p>
-              <p class="authorInfo"><span class="authorName"><img src="@/assets/img/widget-photo.png"
-                                                                  alt=""/>玻璃筒</span> <span>1月8日 13:34</span></p>
+            <li class="list-item" v-for="(item,index) in info.questionList" :key="index">
+              <p class="list-title">
+              {{item.title}}</p>
+              <p class="authorInfo"><span class="authorName"><img :src="item.userImage"
+                                                                  alt=""/>{{item.userName}}</span> <span style="color: #a8a8a8;">{{item.createDate}}</span></p>
             </li>
           </ul>
-          <a class="sui-btn btn-block btn-bordered btn-more">查看更多</a>
+          <a class="sui-btn btn-block btn-bordered btn-more" @click="refreshQuestionList()">{{isRefreshQuestiontitle}}
+            <Spin v-if="isRefreshQuestion" style="display: inline-block;"></Spin></a>
         </div>
       </div>
       <div class="activity-list">
@@ -65,6 +51,7 @@
 <script>
     import '@/assets/css/page-sj-headline-login.css'
     import {getGathering} from '@/pages/api/gathering'
+    import {getQuestion} from '@/pages/api/question'
 
     export default {
         data() {
@@ -88,6 +75,7 @@
                     categoryList: [],
                     articleList: [],
                     gatheringList: [],
+                    questionList: [],
                     gatheringParams: {
                         isHost: '0',
                         state: '',
@@ -95,6 +83,16 @@
                         size: 5,
                         total: 0
                     },
+                    questionParams: {
+                        userId: '',
+                        userName: '',
+                        title: '',
+                        content: '',
+                        searchState: '2',
+                        page: 1,
+                        size: 5,
+                        total: 0
+                    }
                 }
             }
         },
@@ -103,6 +101,24 @@
                 this.info.params.filterContent = ''
                 this.info.params.page = 1
                 this.info.params.size = 3
+            },
+            refreshQuestionData(){
+                this.isRefreshQuestion = true
+                this.isRefreshQuestiontitle = "加载中"
+                let total = this.info.questionParams.total
+                let size = this.info.questionParams.size
+                let index = Math.ceil(total / size)
+                let page = this.info.questionParams.page
+                if (page < index) {
+                    page++
+                    this.info.questionParams.page = page
+                } else {
+                    this.info.questionParams.page = 1
+                }
+            },
+            async refreshQuestionList() {
+                await this.refreshQuestionData()
+                this.getQuestion()
             },
             refreshGatheingData() {
                 this.isRefreshGatering = true
@@ -152,7 +168,22 @@
                     this.$Loading.finish();
                 })
             },
+            getQuestion() {
+                this.$Loading.start();
+                let params = {
+                    searchState: this.info.questionParams.searchState,
+                    page: this.info.questionParams.page,
+                    size: this.info.questionParams.size
+                }
+                getQuestion(params).then((res) => {
+                    this.info.questionList = res.data.data.rows
+                    this.isRefreshQuestion = false
+                    this.isRefreshQuestiontitle = "查看更多"
+                    this.$Loading.finish();
+                })
+            },
             loadData() {
+                this.getQuestion()
                 this.clearData()
                 this.getGathering()
             }
