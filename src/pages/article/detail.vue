@@ -31,8 +31,8 @@
                     </div>
                   </div>
 
-                  <div class="userdo" @click="tocollection">
-                    <div class="userdo_item">
+                  <div class="userdo">
+                    <div class="userdo_item" @click="tocollection">
                       <div class="icon">
                         <img src="http://cyq-test.oss-cn-beijing.aliyuncs.com/shoucang.png"
                              v-if="info.isCollection === '0'"/>
@@ -50,33 +50,34 @@
                       </div>
                       <span>点赞</span>
                     </div>
-                    <div class="userdo_item">
+                    <div class="userdo_item" @click="isReply = !isReply">
                       <div class="icon">
                         <img src="http://cyq-test.oss-cn-beijing.aliyuncs.com/pinglun.png"/>
                       </div>
-                      <span @click="isReply = !isReply">评论</span>
+                      <span>评论</span>
                     </div>
 
                   </div>
 
                   <div class="pinglun" v-if="isReply">
                     <Input v-model="reply" type="textarea" :rows="4" placeholder="我也来说一句..."/>
-                    <Button type="primary">发表评论</Button>
+                    <Button type="primary" @click="toComment()">发表评论</Button>
                   </div>
                 </div>
               </div>
             </div>
             <div class="data-list">
               <ul id="data-list-down" class="headline loading">
-                <li class="headline-item" v-for="(item,index)  in model.articleList" :key="index">
+                <li class="headline-item" v-for="(item,index)  in model.questionList" :key="index">
 
                   <div class="content">
                     <table>
                       <tr style="width: 100%;">
                         <td style="width: 600px"><span
-                          style="text-decoration:none;color:#333">{{item.filterContent}}</span></td>
+                          style="text-decoration:none;color:#333">{{item.content}}</span></td>
                         <td style="width: 25px;float: right">
-                          <img style="cursor: pointer;width: 20px;height: 14px;" src="http://cyq-test.oss-cn-beijing.aliyuncs.com/dianzan.png"/>
+                          <img style="cursor: pointer;width: 20px;height: 14px;"
+                               src="http://cyq-test.oss-cn-beijing.aliyuncs.com/dianzan.png"/>
                         </td>
                       </tr>
                     </table>
@@ -116,12 +117,17 @@
         unCollection,
         thumbup,
         unthumbup,
-        searchCollection
+        searchCollection,
+        findCommentByArticleId,
+        commentArticle
     } from '@/pages/api/article'
+
+    import {getQuestion, replySearch} from '@/pages/api/question'
 
     export default {
         data() {
             return {
+                user: {},
                 isReply: false,
                 content: '',
                 articleId: '',
@@ -135,12 +141,35 @@
                         size: 3,
                         total: 0
                     },
+                    questionList: [],
                     articleList: []
                 },
                 reply: '',
             }
         },
         methods: {
+            toComment() {
+                this.$Loading.start();
+                let params = {
+                    articleId: this.articleId,
+                    content: this.reply || '',
+                    userId: this.user.userId,
+                    userImage: this.user.userImage,
+                    userName: this.user.userName
+                }
+                commentArticle(params).then((res) => {
+                    if (res.data.code === 20000) {
+                        this.$Message.success('评论成功');
+                        this.info.commentTotal++
+                        this.getComment()
+                        this.reply = ''
+                    }
+                    this.$Loading.finish();
+                }).catch(error => {
+                    this.$Message.error('评论失败');
+                    this.$Loading.error();
+                })
+            },
             tothumbup() {
                 if (this.info.isThumbup === '0') {
                     this.thumbup()
@@ -164,7 +193,6 @@
                         this.$Message.success('点赞成功');
                         this.info.isThumbup = "1"
                         this.info.thumbup++
-                        console.log("this.info.thumbup", this.info.thumbup)
                     }
                     this.$Loading.finish();
                 }).catch(error => {
@@ -191,9 +219,9 @@
                 let params = {
                     articleId: this.info.articleId,
                     articleTitle: this.info.articleTitle || '',
-                    userId: this.info.userId || '',
-                    userImage: this.info.userImage || '',
-                    userName: this.info.userName || ''
+                    userId: this.user.userId || '',
+                    userImage: this.user.userImage || '',
+                    userName: this.user.userName || ''
                 }
                 collectionArticle(params).then((res) => {
                     if (res.data.code === 20000) {
@@ -227,37 +255,24 @@
                     this.content = res.data.data.content
                 })
             },
-            getReply() {
+            getComment() {
                 this.$Loading.start();
-                let params = {
-                    categoryId: this.model.params.categoryId,
-                    filterContent: this.model.params.filterContent,
-                    title: '',
-                    page: this.model.params.page,
-                    size: this.model.params.size
-                }
-                findSearchArticle(params).then((res) => { // 根据分类名查询信息
-                    let data = res.data.data.rows
-                    this.model.params.total = Number(res.data.data.total)
+                findCommentByArticleId(this.articleId).then((res) => { // 根据分类名查询信息
+                    let data = res.data.data
                     if (data) {
                         let list = []
                         const _this = this
                         for (let i = 0; i < data.length; i++) {
-                            const {createDate, articleId, userId, userName, userImage, filterContent, title, isCollection, isThumbup} = data[i]
+                            const {commentDate, commentId, articleId, userId, userName, userImage, thumbup, content} = data[i]
                             list.push({
-                                isThumbup: isThumbup,
-                                userId: userId,
-                                isCollection: isCollection,
-                                userName: userName,
-                                userImage: userImage,
-                                createDate: createDate.substring(5, 11),
-                                filterContent: filterContent,
-                                title: title,
-                                articleId: articleId
+                                thumbup,
+                                userId, userName, userImage,
+                                content,
+                                commentId, articleId,
+                                createDate: commentDate
                             })
                         }
-                        this.model.articleList = list
-                        console.info("this.model.articleList", this.model.articleList)
+                        this.model.questionList = list
                     }
                     this.$Loading.finish();
                 }).catch(error => {
@@ -276,11 +291,15 @@
         },
         mounted() {
             this.getLoadData()
-            this.getReply()
+            this.getComment()
             // this.countTime()
         },
         created() {
             this.articleId = this.$route.query.articleId
+            if (window.localStorage.getItem('USER')) {
+                let userInfo = window.localStorage.getItem('USER')
+                this.user = JSON.parse(userInfo)
+            }
         }
     }
 </script>

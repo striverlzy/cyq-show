@@ -27,3 +27,18 @@ export function publishQuestion(params = {
 }) {
   return Request.post(baseUrl + '/publish', params)
 }
+
+// 回复
+export function replySearch(params = {
+  questionId: '',
+  userImage: '',
+  title: '',
+  userId: '',
+  userName: '',
+  content: '',
+  page: null,
+  size: null
+}) {
+  return Request.post(baseUrl + '/reply/search', params)
+}
+

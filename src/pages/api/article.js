@@ -19,9 +19,15 @@ export function findSearchArticle(params = {
   return Request.post(baseUrl + '/article/search', params)
 }
 
-// 根据文章id查询
+// 根据文章id查询 GET /article/findCommentByArticleId
 export function getArticleByCategoryId(id) {
   return Request.get('article/article/getArticleByCategoryId?categoryId=' + id)
+}
+
+
+// 查询评论
+export function findCommentByArticleId(id) {
+  return Request.get(baseUrl + '/findCommentByArticleId?articleId=' + id)
 }
 
 // 分类查询
@@ -32,6 +38,17 @@ export function getArticleById(id) {
 // 获取分类名
 export function getCategory() {
   return Request.get('article/category/getcategory')
+}
+
+// 评论
+export function commentArticle(params = {
+  articleId: '',
+  content: '',
+  userId: '',
+  userImage: "",
+  userName: ""
+}) {
+  return Request.post(baseUrl + '/comment', params)
 }
 
 // 收藏
