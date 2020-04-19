@@ -53,7 +53,7 @@
               </div>
               <div class="data-list">
 
-                <Button style="float: right" type="primary" @click="submit">发表</Button>
+                <Button style="float: right" type="primary" @click="submit">发表文章</Button>
               </div>
             </Form>
           </div>
