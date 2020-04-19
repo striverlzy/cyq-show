@@ -11,7 +11,7 @@
                 v-for="(item,index) in info.categoryList"
                 :key="index"
                 @click="categoryClickHandel(index,item.categoryId)"
-              ><a href="#">{{item.categoryName}}</a>
+              ><a>{{item.categoryName}}</a>
               </li>
             </ul>
           </div>
@@ -181,7 +181,7 @@
                 this.$Loading.start();
                 let params = {
                     articleId: item.articleId,
-                    articleTitle: item.articleTitle || '',
+                    articleTitle: item.title || '',
                     userId: item.userId || '',
                     userImage: item.userImage || '',
                     userName: item.userName || ''
