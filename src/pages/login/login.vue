@@ -4,40 +4,25 @@
     <div class="left"></div>
     <div class="right">
       <div class="login_box">
-        <span>车友登录</span>
-        <div class="inp_box">
-          <div class="inp">
-            <Input v-model="loginForm.text" placeholder="账号" style="width: 300px" />
-            <Input type="password" v-model="loginForm.password" placeholder="密码" style="width: 300px" />
-            <div class="register"><a> 没有账号？去注册</a></div>
+        <Form ref="model" :model="model" :rules="rule" inline>
+          <span>车友登录</span>
+          <div class="inp_box">
+            <div class="inp">
+              <FormItem prop="text"><Input v-model="model.text" placeholder="账号" style="width: 300px"/></FormItem>
+              <FormItem prop="password"><Input type="password" v-model="model.password" placeholder="密码"
+                                               style="width: 300px"/></FormItem>
+              <div class="register"><a> 没有账号？去注册</a></div>
 
-          </div>
+            </div>
 
-          <div class="login_btn">
-            <Button type="primary" v-on:click="login">登录</Button>
+            <div class="login_btn">
+              <Button type="primary" v-on:click="login">登录</Button>
+            </div>
           </div>
-        </div>
+        </Form>
       </div>
     </div>
   </div>
-
-<!--  <Form class="login-container" ref="formInline" inline>-->
-<!--    <h3 class="login_title">系统登录</h3>-->
-<!--    <FormItem prop="user">-->
-<!--      <Input type="text" v-model="loginForm.text" placeholder="账号">-->
-<!--        <Icon type="ios-person-outline" slot="prepend"></Icon>-->
-<!--      </Input>-->
-<!--    </FormItem>-->
-<!--    <FormItem prop="password">-->
-<!--      <Input type="password" v-model="loginForm.password" placeholder="密码">-->
-<!--        <Icon type="ios-lock-outline" slot="prepend"></Icon>-->
-<!--      </Input>-->
-<!--    </FormItem>-->
-<!--    <FormItem>-->
-<!--      <Button type="primary" v-on:click="login">登录</Button>-->
-<!--    </FormItem>-->
-<!--  </Form>-->
-
 </template>
 
 
@@ -48,8 +33,15 @@
         name: '登录',
         data() {
             return {
-
-                loginForm: {
+                rule: {
+                    text: [
+                        {required: true, message: '账号不能为空', trigger: 'blur'}
+                    ],
+                    password: [
+                        {required: true, message: '密码不能为空', trigger: 'blur'}
+                    ]
+                },
+                model: {
                     text: '',
                     password: ''
                 },
@@ -60,77 +52,87 @@
         methods: {
             login() {
                 let params = {
-                    text: this.loginForm.text,
-                    password: this.loginForm.password
+                    text: this.model.text,
+                    password: this.model.password
                 }
-                this.$Loading.start();
-                toLogin(params).then((res) => {
-                    if (res.data.code === 20000) {
-                        let userInfo = res.data.data
-                        this.$store.commit('$_setToken', userInfo.token);
-                        let userMessage = {
-                            userId: userInfo.userId,
-                            userName: userInfo.userName,
-                            userImage: userInfo.userImage
-                        }
-                        window.localStorage.setItem('USER', JSON.stringify(userMessage))
-                        this.$router.push({path: '/'})
+                this.$refs['model'].validate((valid) => {
+                    if (valid) {
+                        this.$Loading.start();
+                        toLogin(params).then((res) => {
+                            if (res.data.code === 20000) {
+                                let userInfo = res.data.data
+                                this.$store.commit('$_setToken', userInfo.token);
+                                let userMessage = {
+                                    userId: userInfo.userId,
+                                    userName: userInfo.userName,
+                                    userImage: userInfo.userImage
+                                }
+                                window.localStorage.setItem('USER', JSON.stringify(userMessage))
+                                this.$router.push({path: '/'})
+                            }
+                            this.$Loading.finish();
+                        }).catch(error => {
+                            this.$Loading.error("账号或密码错误");
+                        })
+                    } else {
+                        this.$Message.error('登录失败');
                     }
-                    this.$Loading.finish();
-                }).catch(error => {
-                    this.$Loading.error();
                 })
+
             }
         }
     }
 </script>
 <style lang="less" scoped>
-  /*.login-container {*/
-  /*  border-radius: 15px;*/
-  /*  background-clip: padding-box;*/
-  /*  margin: 90px auto;*/
-  /*  width: 350px;*/
-  /*  padding: 35px 35px 15px 35px;*/
-  /*  background: #fff;*/
-  /*  border: 1px solid #eaeaea;*/
-  /*  box-shadow: 0 0 25px #cac6c6;*/
-  /*}*/
+  .right {
+    /deep/ .ivu-form-inline .ivu-form-item {
+      display: block;
+      margin-right: 0;
+    }
 
-  /*.login_title {*/
-  /*  margin: 0px auto 40px auto;*/
-  /*  text-align: center;*/
-  /*  color: #505458;*/
-  /*}*/
+    /deep/ .ivu-form-item-error-tip {
+      padding-top: 0;
+      margin-top: -8px;
+    }
 
-  .left{
+    /deep/ .ivu-form-item {
+      margin-bottom: 0;
+    }
+  }
+
+  .left {
     width: 50%;
     float: left;
     height: 640px;
     background: #00a8ff;
   }
 
-  .right{
+  .right {
     width: 50%;
     float: left;
     margin-top: 200px;
-    .login_box{
+
+    .login_box {
       width: 300px;
       margin: 0 auto;
       font-size: 30px;
+
       .inp {
-     /deep/ Input{
-       margin: 10px 0;
-        height: 40px;
+        /deep/ Input {
+          margin: 10px 0;
+          height: 40px;
+        }
       }
+
+      .login_btn {
+        /deep/ Button {
+          margin-top: 10px;
+          width: 300px;
+          height: 40px;
+        }
       }
-      .login_btn{
-      /deep/ Button{
-        margin-top:10px;
-        width: 300px;
-        height: 40px;
-      }
-      }
-      .register{
+
+      .register {
         font-size: 12px;
         text-align: right;
       }
