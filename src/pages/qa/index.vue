@@ -57,18 +57,6 @@
               </div>
             </div>
           </div>
-          <div id="php" class="tab-pane">
-            php
-          </div>
-          <div id="js" class="tab-pane">
-            Javascript
-          </div>
-          <div id="python" class="tab-pane">
-            python
-          </div>
-          <div id="java" class="tab-pane">
-            java
-          </div>
         </div>
       </div>
       <div class="fl right-tag">
@@ -82,13 +70,10 @@
           </div>
           <div class="tags">
             <ul class="sui-tag">
-              <li>1</li>
-              <li>2</li>
-              <li>3</li>
-              <li>4</li>
-              <li>5</li>
-              <li>6</li>
-              <li>7</li>
+              <li>国产专区</li>
+              <li>日系专区</li>
+              <li>美系专区</li>
+              <li>德系专区</li>
             </ul>
           </div>
         </div>
