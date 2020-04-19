@@ -223,7 +223,6 @@
             },
             getLoadData() {
                 getArticleById(this.articleId).then((res) => {
-                    console.log("res.data.data", res.data.data)
                     this.info = res.data.data
                     this.content = res.data.data.content
                 })
