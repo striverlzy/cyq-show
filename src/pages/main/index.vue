@@ -92,66 +92,6 @@
             </div>
           </div>
           <Right></Right>
-<!--          <div class="fl right">-->
-<!--            <div class="activity">-->
-<!--              <ul class="gatheringList">-->
-<!--                <li class="acti" v-for="(item,index) in info.gatheringList" :key="index">-->
-<!--                  <a v-if="index<2" :href="hrefUrl" @click="viewGathering(item.gatheringId)" target="_blank"><img-->
-<!--                    style="width: 300px;height: 196px;" :src="item.gatheringImage"/></a>-->
-<!--                </li>-->
-<!--              </ul>-->
-<!--            </div>-->
-<!--            <div class="question-list">-->
-<!--              <h3 class="title">热门回答</h3>-->
-<!--              <div class="lists">-->
-<!--                <ul>-->
-<!--                  <li class="list-item"><p class="list-title">红旗H9值得入手吗？大家怎么看？</p>-->
-<!--                    <p class="authorInfo"><span class="authorName"><img src="@/assets/img/widget-photo.png"-->
-<!--                                                                        alt=""/>于无声处</span> <span>1月8日 20:19</span></p>-->
-<!--                  </li>-->
-<!--                  <li class="list-item"><p class="list-title">20万居家SUV大家有什么推荐吗？</p>-->
-<!--                    <p class="authorInfo"><span class="authorName"><img src="@/assets/img/widget-myphoto.jpg"-->
-<!--                                                                        alt=""/>白菜白了又菜</span> <span>1月6日 10:28</span>-->
-<!--                    </p>-->
-<!--                  </li>-->
-<!--                  <li class="list-item"><p class="list-title">雨刮器多久换一次比较合适？</p>-->
-<!--                    <p class="authorInfo"><span class="authorName"><img src="@/assets/img/widget-movie.png"-->
-<!--                                                                        alt=""/>清风小神童</span> <span>1月7日 14:43</span></p>-->
-<!--                  </li>-->
-<!--                  <li class="list-item"><p class="list-title">汽车下了个杀毒软件删完东西之后360全息影像不好使怎么回事？</p>-->
-<!--                    <p class="authorInfo"><span class="authorName"><img src="@/assets/img/widget-photo.png"-->
-<!--                                                                        alt=""/>玻璃筒</span> <span>1月8日 13:34</span></p>-->
-<!--                  </li>-->
-<!--                  <li class="list-item"><p class="list-title">汽车下了个杀毒软件删完东西之后360全息影像不好使怎么回事？</p>-->
-<!--                    <p class="authorInfo"><span class="authorName"><img src="@/assets/img/widget-photo.png"-->
-<!--                                                                        alt=""/>玻璃筒</span> <span>1月8日 13:34</span></p>-->
-<!--                  </li>-->
-<!--                </ul>-->
-<!--                <a class="sui-btn btn-block btn-bordered btn-more">查看更多</a>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="activity-list">-->
-<!--              <h3 class="title">活动日历</h3>-->
-<!--              <div class="list">-->
-<!--                <ul>-->
-<!--                  <li class="list-item" v-for="(item,index) in info.gatheringList" :key="index">-->
-<!--                    <p class="list-time"> {{item.startDate}} {{item.address}}</p>-->
-<!--                    <div class="list-content clearfix">-->
-<!--                      <div class="fl img">-->
-<!--                        <img style="width: 60px;height: 34px;" :src="item.gatheringImage" alt=""/>-->
-<!--                      </div>-->
-<!--                      <div>-->
-<!--                        <p>{{item.title}}</p>-->
-<!--                      </div>-->
-<!--                    </div>-->
-<!--                  </li>-->
-<!--                </ul>-->
-<!--                <a class="sui-btn btn-block btn-bordered btn-more" @click="refreshGatheingList()">{{isRefreshGatheringtitle}}-->
-<!--                  <Spin v-if="isRefreshGatering" style="display: inline-block;"></Spin>-->
-<!--                </a>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
         </div>
       </div>
     </div>
