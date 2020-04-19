@@ -31,9 +31,21 @@ export default new Router({
     },
     {
       path: '/add',
-      name: '发布',
-      meta: { title: '发布' , requiresAuth: true},
+      name: '发布文章',
+      meta: { title: '发布文章' , requiresAuth: true},
       component: () => import('@/pages/article/submit.vue')
+    },
+    {
+      path: '/addQuestion',
+      name: '发布问题',
+      meta: { title: '发布问题' , requiresAuth: true},
+      component: () => import('@/pages/qa/submit.vue')
+    },
+    {
+      path: '/question/detail',
+      name: '问题详情',
+      meta: { title: '问题详情' , requiresAuth: true},
+      component: () => import('@/pages/qa/detail.vue')
     },
     {
       path: '/gathering',
