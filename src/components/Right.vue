@@ -178,6 +178,7 @@
                 getQuestion(params).then((res) => {
                     this.info.questionList = res.data.data.rows
                     this.isRefreshQuestion = false
+                    this.info.questionParams.total = res.data.data.total
                     this.isRefreshQuestiontitle = "查看更多"
                     this.$Loading.finish();
                 })

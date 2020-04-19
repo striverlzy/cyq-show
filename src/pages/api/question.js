@@ -14,3 +14,16 @@ export function getQuestion(params = {
 }) {
   return Request.post(baseUrl + '/question/search', params)
 }
+
+// 问题发布
+export function publishQuestion(params = {
+  userId: '',
+  userName: '',
+  userImage: '',
+  title: '',
+  categoryId: '',
+  categoryName: '',
+  content: ''
+}) {
+  return Request.post(baseUrl + '/publish', params)
+}

@@ -35,14 +35,14 @@
                         <div class="fl info">
                           <div class="question">
                             <p class="author"><span class="name"> </span><span> </span> </p>
-                            <p class="title"><a href="#" target="_blank">{{item.content}}</a></p>
+                            <p class="title"><span style="cursor: pointer" @click="toQuestionDetail(item.questionId)">{{item.content}}</span></p>
                           </div>
                           <div class="other">
                             <ul class="fl sui-tag">
                               <li>{{item.categoryName}}</li>
                             </ul>
                             <div class="fr brower">
-                              <p>{{item.createDate}}<a>{{item.userName}} </a></p>
+                              <span><img style="width: 15px;height: 15px;border-radius: 4px;" :src="item.userImage"></span> <span>{{item.userName}} </span><span>  {{item.createDate}}</span>
                             </div>
                           </div>
                         </div>
@@ -74,7 +74,7 @@
       <div class="fl right-tag">
         <div class="block-btn">
           <p>今天，有什么好东西要和大家分享么?</p>
-          <a class="sui-btn btn-block btn-share" href="./qa-submit.html" target="_blank">发布问题</a>
+          <a class="sui-btn btn-block btn-share" href="/addQuestion" target="_blank">发布问题</a>
         </div>
         <div class="hot-tags">
           <div class="head">
@@ -107,7 +107,7 @@
             return {
                 isActive: 0,
                 menus: [
-                    {state: "1", name: "最新回答"},
+                    {state: "1", name: "最新问答"},
                     {state: "2", name: "最热回答"},
                     {state: "3", name: "等待回答"}
                 ],
@@ -127,6 +127,10 @@
             }
         },
         methods: {
+            toQuestionDetail(questionId){
+                let url = 'http://localhost:10002/question/detail?questionId=' + questionId
+                window.open(url, '_blank');
+            },
             async doSearch(query) {
                 await this.changeContent(query)
                 this.getLoadData(this.isActive+1, true)

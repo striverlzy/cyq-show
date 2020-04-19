@@ -2,111 +2,252 @@
   <div>
 
     <Header></Header>
-    <div style="width: 50rem"
-    >
-      <quill-editor
-        v-model="content"
-        ref="myQuillEditor"
-        :options="editorOption"
-        @blur="onEditorBlur($event)"
-        @focus="onEditorFocus($event)"
-        @ready="onEditorReady($event)"
-        @change="onEditorChange($event)"
-      ></quill-editor>
+    <div class="sui-container wrapper">
+      <div class="sj-content">
+        <div class="left-nav">
+          <div class="float-nav" id="float-nav">
+            <ul class="sui-nav nav-tabs nav-xlarge tab-navbar tab-vertical">
+            </ul>
+          </div>
+        </div>
+        <div class="right-content">
+          <div class="fl middle">
+            <Form ref="model" :model="model" :rules="rule" inline>
+              <div class="carousel">
+                <div class="sui-carousel slide" style=" margin-top: 15px;">
+
+
+                  <div class="qa-css">
+                    <table style="width: 100%">
+                      <tr style="width: 100%">
+                        <td style="width: 65%">
+                          <FormItem prop="title"><Input v-model="model.title" placeholder="标题"/></FormItem>
+                        </td>
+                        <td style="width: 35%">
+                          <FormItem prop="categoryId"><Select v-model="model.categoryId" @on-change="selectHandel"
+                                                              :label-in-value="true"
+                                                              placeholder="请选择标签">
+                            <Option v-for="item in info.categoryList" :value="item.categoryId" :key="item.categoryId">
+                              {{item.categoryName }}
+                            </Option>
+                          </Select></FormItem>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+
+                  <div class="qa-input">
+                    <FormItem prop="content">
+                      <Input v-model="model.content" type="textarea" :rows="9"
+                             placeholder="请描述您的问题..."/></FormItem>
+                  </div>
+
+                </div>
+              </div>
+              <div class="data-list">
+                <FormItem>
+                  <Button style="float: right" type="primary" @click="submit(model)">发表问答</Button>
+                </FormItem>
+              </div>
+            </Form>
+          </div>
+
+          <!--          <Right></Right>-->
+          <div class="fl rights">
+            <div class="question-list">
+              <h3 class="title">热门回答</h3>
+              <div class="lists">
+                <ul>
+                  <li class="list-item" v-for="(item,index) in info.questionList" :key="index">
+                    <p class="list-title">
+                      {{item.title}}</p>
+                    <p class="authorInfo"><span class="authorName"><img :src="item.userImage"
+                                                                        alt=""/>{{item.userName}}</span> <span style="color: #a8a8a8;">{{item.createDate}}</span></p>
+                  </li>
+                </ul>
+                <a class="sui-btn btn-block btn-bordered btn-more" @click="refreshQuestionList()">{{isRefreshQuestiontitle}}
+                  <Spin v-if="isRefreshQuestion" style="display: inline-block;"></Spin></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <button @click="submit">发表</button>
   </div>
 </template>
 
 <script>
-    import {toSubmit} from '@/pages/api/article'
     import Header from '@/components/Header'
-    import {quillRedefine} from 'vue-quill-editor-upload'
+    import {publishQuestion,getQuestion} from '@/pages/api/question'
+    import {getCategory} from '@/pages/api/article'
 
     export default {
         data() {
             return {
-                content: `<p>hello world</p>`,
-                filterContent: '',
-                url: '',
-                editorOption: {
-                    modules: {
-                        toolbar: [
-                            ['bold'],    //加粗，斜体，下划线，删除线
-
-                            [{'header': 1}],    // 标题，键值对的形式；1、2表示字体大小
-
-                            [{'align': []}],    //对齐方式
-
-                            ['image']    //上传图片
-                        ]
-                    },
+                user: {},
+                rule: {
+                    title: [
+                        {required: true, message: '标题不能为空', trigger: 'blur'}
+                    ],
+                    categoryId: [
+                        {required: true, message: '标签不能为空', trigger: 'blur'}
+                    ],
+                    content: [
+                        {required: true, message: '问题不能为空', trigger: 'blur'}
+                    ]
+                },
+                model: {
+                    content: '',
+                    title: '',
+                    categoryId: '',
+                    categoryName: '',
+                },
+                isRefreshQuestion: false,
+                isRefreshQuestiontitle: "查看更多",
+                info: {
+                    questionList: [],
+                    categoryList: [],
+                    questionParams: {
+                        userId: '',
+                        userName: '',
+                        title: '',
+                        content: '',
+                        searchState: '2',
+                        page: 1,
+                        size: 3,
+                        total: 0
+                    }
                 }
+
             }
-        },
-        computed: {
-            editor() {
-                return this.$refs.myQuillEditor.quill;
-            },
         },
         methods: {
-            submit() {
+            refreshQuestionData(){
+                this.isRefreshQuestion = true
+                this.isRefreshQuestiontitle = "加载中"
+                let total = this.info.questionParams.total
+                let size = this.info.questionParams.size
+                let index = Math.ceil(total / size)
+                let page = this.info.questionParams.page
+                if (page < index) {
+                    page++
+                    this.info.questionParams.page = page
+                } else {
+                    this.info.questionParams.page = 1
+                }
+            },
+            async refreshQuestionList() {
+                await this.refreshQuestionData()
+                this.getQuestion()
+            },
+            getQuestion() {
+                this.$Loading.start();
                 let params = {
-                    userId: '1219873111349006336',
-                    categoryId: '1220319659312680960', // 日系
-                    title: '测试富文本编辑器',
-                    content: this.content,
-                    filterContent: this.filterContent
+                    searchState: this.info.questionParams.searchState,
+                    page: this.info.questionParams.page,
+                    size: this.info.questionParams.size
                 }
-                toSubmit(params)
+                getQuestion(params).then((res) => {
+                    this.info.questionList = res.data.data.rows
+                    this.isRefreshQuestion = false
+                    this.info.questionParams.total = res.data.data.total
+                    this.isRefreshQuestiontitle = "查看更多"
+                    this.$Loading.finish();
+                })
             },
-            onEditorBlur(quill) {
-                // console.log('editor blur!', quill)
-                // console.log(quill.container.firstChild.innerHTML)//获得html格式文本,岂不美哉
-            },
-            onEditorFocus(quill) {
-                // console.log('editor focus!', quill)
-            },
-            onEditorReady(quill) {
-                // console.log('editor ready!', quill)
-            },
-            onEditorChange({quill, html, text}) {
-                // console.log('editor change!', quill, html, text)
-                this.content = html
-                let data1 = html.replace(/<[^>]+>/g, "")
-                if (data1) {
-                    this.filterContent = data1.replace(/\s*/g, "")
+            selectHandel(item) {
+                if (item) {
+                    this.model.categoryId = item.value
+                    let data1 = item.label.replace(/<[^>]+>/g, "")
+                    if (data1) {
+                        this.model.categoryName = data1.replace(/\s*/g, "")
+                    }
                 }
-                // console.info("editor change quill",quill.editor.delta.ops)
-                console.info("editor change html", html)
-                // console.info("editor change text",text)
-            }
+            },
+            getLoadData() {
+                this.$Loading.start();
+                getCategory().then((res) => { // 获取分类名
+                    if (res) {
+                        this.info.categoryList = res.data.data
+                    }
+                    this.$Loading.finish();
+                }).catch(error => {
+                    this.$Loading.error();
+                })
+            },
+            cleanData() {
+                this.model = {
+                    content: '',
+                    title: '',
+                    categoryId: '',
+                    categoryName: '',
+                }
+            },
+            submit() {
+                this.$refs['model'].validate((valid) => {
+                    if (valid) {
+                        let params = {
+                            userId: this.user.userId,
+                            userName: this.user.userName,
+                            userImage: this.user.userImage,
+                            categoryId: this.model.categoryId,
+                            categoryName: this.model.categoryName,
+                            title: this.model.title,
+                            content: this.model.content,
+                        }
+                        this.$Loading.start()
+                        publishQuestion(params).then((res) => {
+                            if (res.data.code === 20000) {
+                                this.$Message.success('发布成功');
+                            }
+                            this.cleanData()
+                            this.$Loading.finish();
+                        })
+
+                    } else {
+                        this.$Message.error('发布失败');
+                    }
+                })
+            },
+
         },
         created() {
-            this.editorOption = quillRedefine(
-                {
-                    // 图片上传的设置
-                    uploadConfig: {
-                        action: 'http://localhost:3000/upload',  // 必填参数 图片上传地址
-                        res: (respnse) => {
-                            this.url = respnse.info
-                            console.info("this.url", this.url)
-                            return respnse.info //return图片url
-                        },
-                        name: 'img'  // 图片上传参数名
-                    },
-                    toolOptions: ['bold', 'image', {'header': 1}, {'align': []}]
-                })
+            this.getLoadData()
+            this.getQuestion()
+            if (window.localStorage.getItem('USER')) {
+                let userInfo = window.localStorage.getItem('USER')
+                this.user = JSON.parse(userInfo)
+            }
         },
         components: {
             Header
         }
     }
 </script>
-<style>
-  .quill-editor {
-    min‐height: 200px;
-    max‐height: 400px;
-    overflow‐y: auto;
+<style lang="less" scoped>
+  .qa-css {
+    height: 80px;
+    margin-bottom: 8px;
+    width: 100%;
+    padding: 12px 15px;
+    background: #ffffff;
+  }
+
+  .right-content {
+    /deep/ .ivu-form-inline .ivu-form-item {
+      display: block;
+      margin-right: 0;
+    }
+
+    /deep/ .ivu-form-item {
+      margin-bottom: 0;
+    }
+  }
+
+  .qa-input {
+    height: 243px;
+    width: 100%;
+    padding: 12px 15px;
+    background: #ffffff;
   }
 </style>
