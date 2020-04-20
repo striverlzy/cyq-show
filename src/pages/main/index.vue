@@ -1,7 +1,7 @@
 <template>
   <div>
     <Header ref="setQueryHandel" @backQueryHandel="doSearch"></Header>
-    <Modal  ref="setModal" v-if="showModal"></Modal>
+
     <div class="sui-container wrapper">
       <div class="sj-content">
         <div class="left-nav">
@@ -117,7 +117,6 @@
     export default {
         data() {
             return {
-                showModal: false,
                 hrefUrl: '',
                 isRefreshArticle: false,
                 isRefreshGatering: false,
@@ -285,7 +284,6 @@
                 })
             },
             loadData() {
-                this.showModal = true
                 this.clearData()
                 this.getCategory()
                 this.getGathering()

@@ -22,17 +22,20 @@
         </Form>
       </div>
     </div>
+    <Modal ref="setModal" @backHandle="backHandle" v-if="showModal"></Modal>
   </div>
 </template>
 
 
 <script>
     import {toLogin} from '@/pages/api/user'
+    import Modal from '@/components/Modal'
 
     export default {
         name: '登录',
         data() {
             return {
+                showModal: false,
                 rule: {
                     text: [
                         {required: true, message: '账号不能为空', trigger: 'blur'}
@@ -49,7 +52,16 @@
                 responseResult: []
             }
         },
+        components: {
+            Modal
+        },
         methods: {
+            backHandle(){
+                this.$router.push({path: '/'})
+            },
+            showModals() {
+                this.showModal= true
+            },
             login() {
                 let params = {
                     text: this.model.text,
@@ -68,7 +80,7 @@
                                     userImage: userInfo.userImage
                                 }
                                 window.localStorage.setItem('USER', JSON.stringify(userMessage))
-                                this.$router.push({path: '/'})
+                                this.showModals()
                             }
                             this.$Loading.finish();
                         }).catch(error => {

@@ -63,9 +63,11 @@
             },
             ok() {
                 this.$Message.info('提交成功');
+                this.$emit('backHandle')
             },
             cancel() {
                 this.modal1 = false
+                this.$emit('backHandle')
             }
         },
         mounted() {
