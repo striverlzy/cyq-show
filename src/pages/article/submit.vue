@@ -159,7 +159,7 @@
                         this.$Loading.start();
                         toSubmit(params).then((res) => {
                             if (res.data.code === 20000) {
-                                this.$Message.success('发表成功');
+                                this.$Message.success('提交管理员审核，请耐心等候');
                             }
                             this.$Loading.finish();
                         })
