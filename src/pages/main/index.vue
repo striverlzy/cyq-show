@@ -281,9 +281,6 @@
                     this.$Loading.error();
                 })
             },
-            viewGathering(id) {
-                this.hrefUrl = 'http://localhost:10002/gathering/detail?gatheringId=' + id
-            },
             loadData() {
                 this.clearData()
                 this.getCategory()

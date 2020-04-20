@@ -15,6 +15,8 @@ export function getQuestion(params = {
   return Request.post(baseUrl + '/question/search', params)
 }
 
+
+
 // 问题发布
 export function publishQuestion(params = {
   userId: '',
@@ -28,17 +30,21 @@ export function publishQuestion(params = {
   return Request.post(baseUrl + '/publish', params)
 }
 
-// 回复
-export function replySearch(params = {
-  questionId: '',
-  userImage: '',
-  title: '',
-  userId: '',
-  userName: '',
-  content: '',
-  page: null,
-  size: null
-}) {
-  return Request.post(baseUrl + '/reply/search', params)
+
+// 点赞 findByQuestionId
+export function questionThumbup(questionId) {
+  return Request.get(baseUrl + '/thumbup?questionId=' + questionId)
 }
+
+// 根据Id查询 findByQuestionId
+export function findByQuestionId(questionId) {
+  return Request.get(baseUrl + '/findByQuestionId?questionId=' + questionId)
+}
+
+// 取消点赞
+export function unQuestionThumbup(replyId) {
+  return Request.get(baseUrl + '/unthumbup?questionId=' + questionId)
+}
+
+
 

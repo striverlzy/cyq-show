@@ -97,6 +97,9 @@
             }
         },
         methods: {
+            viewGathering(id) {
+                this.hrefUrl = 'http://localhost:10002/gathering/detail?gatheringId=' + id
+            },
             clearData() {
                 this.info.params.filterContent = ''
                 this.info.params.page = 1
