@@ -1,6 +1,7 @@
 <template>
   <div>
     <Header ref="setQueryHandel" @backQueryHandel="doSearch"></Header>
+    <Modal  ref="setModal" v-if="showModal"></Modal>
     <div class="sui-container wrapper">
       <div class="sj-content">
         <div class="left-nav">
@@ -99,6 +100,7 @@
 </template>
 <script>
     import Right from '@/components/Right'
+    import Modal from '@/components/Modal'
     import Header from '@/components/Header'
     import '@/assets/css/page-sj-headline-login.css'
     import {
@@ -115,6 +117,7 @@
     export default {
         data() {
             return {
+                showModal: false,
                 hrefUrl: '',
                 isRefreshArticle: false,
                 isRefreshGatering: false,
@@ -282,6 +285,7 @@
                 })
             },
             loadData() {
+                this.showModal = true
                 this.clearData()
                 this.getCategory()
                 this.getGathering()
@@ -363,7 +367,8 @@
         },
         components: {
             Right,
-            Header
+            Header,
+            Modal
         },
         created() {
             this.loadData()
