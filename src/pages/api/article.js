@@ -12,6 +12,7 @@ export function findSearchArticle(params = {
   userId: '',
   categoryId: '',
   filterContent: '',
+  articleState: '1',
   title: '',
   page: null,
   size: null

@@ -330,6 +330,7 @@
                     categoryId: this.info.params.categoryId,
                     filterContent: this.info.params.filterContent,
                     title: '',
+                    articleState: '1',
                     page: this.info.params.page,
                     size: this.info.params.size
                 }
