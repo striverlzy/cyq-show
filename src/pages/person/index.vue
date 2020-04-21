@@ -18,23 +18,10 @@
                   <button class="sui-btn btn-danger save-btn">保存</button>
                 </form>
               </li>
-              <li><i class="fa fa-graduation-cap" aria-hidden="true"></i> <span class="edit-item"> 填写毕业院校</span>
-                <form action="" class="sui-form form-inline">
-                  <input type="text" placeholder="院校名称"/>
-                  <input type="text" placeholder="所学专业"/>
-                  <button class="sui-btn btn-danger save-btn">保存</button>
-                </form>
-              </li>
-              <li><i class="fa fa-shopping-bag" aria-hidden="true"></i> <span class="edit-item"> 填写所在公司/组织</span>
+              <li><i class="fa fa-shopping-bag" aria-hidden="true"></i> <span class="edit-item"> 填写您的车龄</span>
                 <form action="" class="sui-form form-inline">
                   <input type="text" placeholder="公司/组织名称"/>
                   <input type="text" placeholder="职位头衔"/>
-                  <button class="sui-btn btn-danger save-btn">保存</button>
-                </form>
-              </li>
-              <li><i class="fa fa-link" aria-hidden="true"></i> <span class="edit-item"> 填写个人网站</span>
-                <form action="" class="sui-form form-inline">
-                  <input type="text" placeholder="个人网站"/>
                   <button class="sui-btn btn-danger save-btn">保存</button>
                 </form>
               </li>
@@ -84,8 +71,8 @@
                       <span class="fa fa-star" aria-hidden="true">{{item.collectionTotal}}</span>
                     </div>
                     <div class="fl content">
-                      <p class="title">{{item.title}}</p>
-                      <p class="link" style="color: black;" v-if="item.content"><a href="#">{{item.content}}</a></p>
+                      <p class="title" style="cursor: pointer" @click="toDetail(item)">{{item.title}}</p>
+                      <div class="link" style="color: black;" v-if="item.content">{{item.content}}</div>
                       <p class="link" style="color: #999">{{item.createDate}}</p>
                     </div>
                     <div class="fr info" v-if="item.userName">
@@ -96,7 +83,8 @@
                   </div>
                 </li>
                 <div style="line-height: 36px;">
-                  <Page v-if="params.total !==0" :total="params.total" :page-size="params.size" show-total @on-change="changePage"/>
+                  <Page v-if="params.total !==0" :total="params.total" :page-size="params.size" show-total
+                        @on-change="changePage"/>
                 </div>
               </ul>
             </div>
@@ -120,7 +108,9 @@
         unthumbup,
         searchCollection
     } from '@/pages/api/article'
-    import {getGathering,findRecord} from '@/pages/api/gathering'
+    import {getGathering, findRecord} from '@/pages/api/gathering'
+    import {getQuestion} from '@/pages/api/question'
+    import {replySearch} from '@/pages/api/reply'
 
     export default {
         data() {
@@ -148,10 +138,6 @@
                     {
                         name: "我的提问",
                         label: "question"
-                    },
-                    {
-                        name: "我的回答",
-                        label: "answer"
                     },
                     {
                         name: "活动报名",
@@ -193,7 +179,7 @@
                     for (let i = 0; i < resList.length; i++) {
                         const {filterContent, createDate, articleId, title, collectionTotal, thumbup, commentTotal} = resList[i]
                         list.push({
-                            title,collectionTotal,
+                            title, collectionTotal,
                             content: filterContent,
                             createDate,
                             id: articleId,
@@ -217,9 +203,10 @@
                     let resList = res.data.data.rows
                     let list = []
                     for (let i = 0; i < resList.length; i++) {
-                        const {userImage,userId,userName,createDate, articleId, articleTitle} = resList[i]
+                        const {userImage, userId, userName, createDate, articleId, articleTitle, content} = resList[i]
                         list.push({
-                            title:articleTitle,
+                            content,
+                            title: articleTitle,
                             createDate,
                             id: articleId,
                             userImage,
@@ -236,11 +223,31 @@
                 this.toptitle = "发布的问题"
                 this.$Loading.start();
                 let params = {
+                    userName: '',
+                    title: '',
+                    content: '',
+                    searchState: '',
                     userId: this.user.userId,
                     page: this.params.page,
                     size: this.params.size
                 }
-                findSearchArticle(params).then((res) => {
+                getQuestion(params).then((res) => {
+                    let resList = res.data.data.rows
+                    let list = []
+                    for (let i = 0; i < resList.length; i++) {
+                        const {userImage, userId, userName, createDate, title, questionId, content} = resList[i]
+                        list.push({
+                            content,
+                            title,
+                            createDate,
+                            id: questionId,
+                            userImage,
+                            userId,
+                            userName
+                        })
+                    }
+                    this.resList = list
+                    this.params.total = res.data.data.total
                     this.$Loading.finish();
                 })
             },
@@ -252,9 +259,38 @@
                     page: this.params.page,
                     size: this.params.size
                 }
-                findSearchArticle(params).then((res) => {
+                replySearch(params).then((res) => {
+                    let resList = res.data.data.rows
+                    let list = []
+                    for (let i = 0; i < resList.length; i++) {
+                        const {userImage, userId, userName, createDate, questionId, content} = resList[i]
+                        list.push({
+                            content,
+                            createDate,
+                            id: questionId,
+                            userImage,
+                            userId,
+                            userName
+                        })
+                    }
+                    this.resList = list
+                    this.params.total = res.data.data.total
                     this.$Loading.finish();
                 })
+            },
+            toDetail(item) {
+                if (this.toptitle === '发表的文章' || this.toptitle === '收藏的文章') {
+                    let url = 'http://localhost:10002/articleDetail?articleId=' + item.id
+                    window.open(url, '_blank');
+                }
+                if (this.toptitle === '报名的活动') {
+                    let url = 'http://localhost:10002/gathering/detail?gatheringId=' +  item.id
+                    window.open(url, '_blank');
+                }
+                if (this.toptitle === '发布的问题') {
+                    let url = 'http://localhost:10002/question/detail?questionId=' + item.id
+                    window.open(url, '_blank');
+                }
             },
             getSignUp() {
                 this.toptitle = "报名的活动"
@@ -264,14 +300,14 @@
                     page: this.params.page,
                     size: this.params.size
                 }
-                console.log("params",params)
+                console.log("params", params)
                 findRecord(params).then((res) => {
                     let resList = res.data.data.content
                     let list = []
                     for (let i = 0; i < resList.length; i++) {
                         const {createDate, gatheringTitle, gatheringId} = resList[i]
                         list.push({
-                            title:gatheringTitle,
+                            title: gatheringTitle,
                             createDate,
                             id: gatheringId,
                         })
@@ -294,9 +330,6 @@
                 }
                 if (item === "question") {
                     this.getQuestion()
-                }
-                if (item === "answer") {
-                    this.getAnswer()
                 }
                 if (item === "signUp") {
                     this.getSignUp()
