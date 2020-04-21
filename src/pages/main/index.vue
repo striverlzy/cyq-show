@@ -79,8 +79,8 @@
                       <div class="clearfix"></div>
                     </h5>
                   </div>
-                  <p class="content">
-                    <span style="text-decoration:none;color:#333">{{item.filterContent}}</span></p>
+                  <p class="content" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+                    <span style="text-decoration:none;color:#333;">{{item.filterContent}}</span></p>
                 </li>
                 <div class="stop">
                   <a @click="refreshArticleList()">{{isRefreshArticletitle}}
@@ -132,7 +132,7 @@
                         filterContent: '',
                         title: '',
                         page: 1,
-                        size: 3,
+                        size: 5,
                         total: 0
                     },
                     categoryList: [],
@@ -215,7 +215,7 @@
             clearData() {
                 this.info.params.filterContent = ''
                 this.info.params.page = 1
-                this.info.params.size = 3
+                this.info.params.size = 5
             },
             changeContent(query) {
                 this.info.params.filterContent = query

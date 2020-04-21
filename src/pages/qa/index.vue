@@ -35,7 +35,10 @@
                         <div class="fl info">
                           <div class="question">
                             <p class="author"><span class="name"> </span><span> </span> </p>
-                            <p class="title"><span style="cursor: pointer" @click="toQuestionDetail(item.questionId)">{{item.content}}</span></p>
+                            <p class="title">
+                            <div style="font-size: 16px;width: 600px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+                              <span style="cursor: pointer;" @click="toQuestionDetail(item.questionId)">
+                                {{item.content}}</span></div></p>
                           </div>
                           <div class="other">
                             <ul class="fl sui-tag">
@@ -106,7 +109,7 @@
                     content: '',
                     searchState: '',
                     page: 1,
-                    size: 3,
+                    size: 5,
                     total: 0
                 }
             }
@@ -139,7 +142,7 @@
                     title: '',
                     content: '',
                     page: 1,
-                    size: 3,
+                    size: 5,
                     total: 0
                 }
                 this.info.questionList = []

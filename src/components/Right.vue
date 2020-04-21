@@ -14,8 +14,8 @@
         <div class="lists">
           <ul>
             <li class="list-item" v-for="(item,index) in info.questionList" :key="index">
-              <p class="list-title">
-              {{item.title}}</p>
+              <span class="list-title" style="cursor: pointer" >
+                <span @click="toDetail(item.questionId)">{{item.title}}</span></span>
               <p class="authorInfo"><span class="authorName"><img :src="item.userImage"
                                                                   alt=""/>{{item.userName}}</span> <span style="color: #a8a8a8;">{{item.createDate}}</span></p>
             </li>
@@ -31,7 +31,7 @@
             <li class="list-item" v-for="(item,index) in info.gatheringList" :key="index">
               <p class="list-time"> {{item.startDate}} {{item.address}}</p>
               <div class="list-content clearfix">
-                <div class="fl img">
+                <div class="fl img" @click="viewGathering(item.gatheringId)">
                   <img style="width: 60px;height: 34px;" :src="item.gatheringImage" alt=""/>
                 </div>
                 <div>
@@ -97,6 +97,10 @@
             }
         },
         methods: {
+            toDetail(questionId){
+                let url = 'http://localhost:10002/question/detail?questionId=' + questionId
+                window.open(url, '_blank');
+            },
             viewGathering(id) {
                 this.hrefUrl = 'http://localhost:10002/gathering/detail?gatheringId=' + id
             },

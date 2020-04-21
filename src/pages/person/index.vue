@@ -72,7 +72,7 @@
                     </div>
                     <div class="fl content">
                       <p class="title" style="cursor: pointer" @click="toDetail(item)">{{item.title}}</p>
-                      <div class="link" style="color: black;" v-if="item.content">{{item.content}}</div>
+                      <div class="link" style="color: black;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;" v-if="item.content">{{item.content}}</div>
                       <p class="link" style="color: #999">{{item.createDate}}</p>
                     </div>
                     <div class="fr info" v-if="item.userName">
