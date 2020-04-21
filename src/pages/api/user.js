@@ -12,3 +12,20 @@ export function getUserById(id) {
   return Request.get(baseUrl + '/findById?id=' + id)
 }
 
+export function toSendsms(mobile) {
+
+  return Request.get(baseUrl + '/sendsms?mobile=' + mobile)
+}
+
+export function toRegister(params = {
+  username: '',
+  mobile: '',
+  code: '',
+  userImage: '',
+  password: '',
+  age: '',
+  sex: ''
+}) {
+  return Request.post(baseUrl + '/register', params)
+}
+

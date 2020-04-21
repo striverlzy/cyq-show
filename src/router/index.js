@@ -18,6 +18,11 @@ export default new Router({
       component: () => import('@/pages/login/login.vue')
     },
     {
+      path: '/register',
+      name: '注册',
+      component: () => import('@/pages/login/register.vue')
+    },
+    {
       path: '/qa',
       name: '问答',
       meta: { title: '问答' , requiresAuth: true},

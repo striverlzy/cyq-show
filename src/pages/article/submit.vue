@@ -160,6 +160,14 @@
                         toSubmit(params).then((res) => {
                             if (res.data.code === 20000) {
                                 this.$Message.success('提交管理员审核，请耐心等候');
+                                this.model = {
+                                    categoryId: '',
+                                    title: '',
+                                    categoryName: '',
+                                    content: ``,
+                                    filterContent: '',
+                                    url: '',
+                                }
                             }
                             this.$Loading.finish();
                         })
@@ -242,7 +250,7 @@
       margin-right: 0;
     }
 
-    /deep/ .ivu-form-item-error-tip{
+    /deep/ .ivu-form-item-error-tip {
       padding-top: 1px;
     }
 

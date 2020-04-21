@@ -8,10 +8,10 @@
           <span>车友登录</span>
           <div class="inp_box">
             <div class="inp">
-              <FormItem prop="text"><Input v-model="model.text" placeholder="账号" style="width: 300px"/></FormItem>
-              <FormItem prop="password"><Input type="password" v-model="model.password" placeholder="密码"
+              <FormItem prop="text" label="手机号或者用户名"><Input v-model="model.text" placeholder="账号" style="width: 300px"/></FormItem>
+              <FormItem prop="password" label="密码"><Input type="password" v-model="model.password" placeholder="密码"
                                                style="width: 300px"/></FormItem>
-              <div class="register"><a> 没有账号？去注册</a></div>
+              <div class="register"><a href="/register" target="_blank"> 没有账号？去注册</a></div>
 
             </div>
 
@@ -122,7 +122,7 @@
   .right {
     width: 50%;
     float: left;
-    margin-top: 200px;
+    margin-top: 150px;
 
     .login_box {
       width: 300px;
@@ -145,7 +145,7 @@
       }
 
       .register {
-        font-size: 12px;
+        font-size: 13px;
         text-align: right;
       }
     }
