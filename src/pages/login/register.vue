@@ -64,6 +64,7 @@
 <script>
     import {put, remove} from '@/pages/api/upload'
     import {toRegister, toSendsms} from '@/pages/api/user'
+    import BasicTypeUtil from '@/utils/BasicTypeUtil'
     import Modal from '@/components/Modal'
 
 
@@ -80,7 +81,16 @@
                         {required: true, message: '用户名不能为空', trigger: 'blur'}
                     ],
                     mobile: [
-                        {required: true, message: '手机不能为空', trigger: 'blur'}
+                        {required: true, message: '手机不能为空', trigger: 'blur'},
+                        {
+                            validator(rule, value, callback) {
+                                const errors = []
+                                if (value !== null && value !== '' && !BasicTypeUtil.telephoneValidate(value)) {
+                                    errors.push('格式不正确')
+                                }
+                                callback(errors)
+                            }
+                        }
                     ],
                     code: [
                         {required: true, message: '验证码不能为空', trigger: 'blur'}
@@ -126,8 +136,8 @@
                 if (this.model.mobile) {
                     this.$Loading.start();
                     toSendsms(this.model.mobile).then((res) => {
-                        this.$Message.success('发送成功');
-                        if (res) {
+                        if (res.data.code === 20000) {
+                            this.$Message.success('发送成功');
                             if (!this.canClick) return
                             this.canClick = false
                             let clock = window.setInterval(() => {
@@ -144,10 +154,13 @@
                                 }
                             }, 1000)
                         }
+                        if(res.data.code === 20001){
+                            this.$Message.error(res.data.message);
+                        }
                     })
                     this.$Loading.finish();
                 } else {
-                    this.$Message.success('请输入手机号');
+                    this.$Message.error('请输入手机号');
                 }
             },
             backHandle() {
@@ -170,8 +183,16 @@
                             sex: ''
                         }
                         toRegister(params).then((res) => {
-                            this.$Message.success('注册成功');
-                            this.$router.push({path: '/login'})
+                            if(res.data.code === 20000){
+                                this.$Message.success(res.data.message);
+                                setTimeout(() => {
+                                    this.$Message.success("正在跳转登录页面...");
+                                    this.$router.push({path: '/login'})
+                                }, 3000)
+                            }
+                            if(res.data.code === 20001){
+                                this.$Message.error(res.data.message);
+                            }
                             this.$Loading.finish();
                         }).catch(error => {
                             this.$Loading.error("账号或密码错误");
