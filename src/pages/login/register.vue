@@ -32,9 +32,17 @@
               </FormItem>
               <FormItem prop="userImage" label="头像">
                 <div style="width: 300px">
-                  <Upload :before-upload="handleUpload" :on-success="handlesuccess" action="">
-                    <Button icon="ios-cloud-upload-outline">上传</Button>
-                  </Upload>
+                  <table>
+                    <tr>
+                      <td style="width: 70%">  <Upload :before-upload="handleUpload" action="/upload">
+                        <Button icon="ios-cloud-upload-outline">上传</Button>
+                      </Upload></td>
+                      <td style="width: 30%" v-if="model.userImage">
+                        <img style="width: 30px;height: 30px;margin-top: 1px;border-radius: 30px" :src="model.userImage">
+                      </td>
+                    </tr>
+                  </table>
+
                 </div>
               </FormItem>
               <div class="register"><a href="/login" target="_blank">去登录</a></div>
@@ -54,9 +62,10 @@
 
 
 <script>
+    import {put, remove} from '@/pages/api/upload'
     import {toRegister, toSendsms} from '@/pages/api/user'
     import Modal from '@/components/Modal'
-    // import {client, put, remove} from '@/utils/fileUtils'
+
 
     export default {
         name: '登录',
@@ -96,50 +105,49 @@
             Modal
         },
         methods: {
-            handleUpload(file) {
-                console.log("handleUpload(res)", file)
+            handleUpload(item) {
+                let fileName = item.name  // 当前本地上传的这张图片的名称(没有时间日期)
+                let date = new Date()
+                let year = date.getFullYear()
+                let month = date.getMonth() + 1
+                month = (month < 10 ? '0' + month : month)
+                let mydate = date.getDate()
+                mydate = (mydate < 10 ? '0' + mydate : mydate)
+                // 这里是把时间+图片名称拼接起来形成一个新的图片上传至oss，目的是区别于本地图片的名称，避免名称相同会误删，同时便于查看oss上最新上传图片的时间点
+                let filePath = year + month + mydate + '-' + fileName
+
+
+                put(filePath, item).then(result => {  // 调oss api 上传图片
+                    // 文件上传成功后，获取返回值中的文件名name，并把其放入fileList数组中，表示当前已上传的文件
+                    this.model.userImage = result.url
+                })
             },
-            handlesuccess(res) {
-                console.log("handlesuccess(res)", res)
-            },
-            sendsms() {
-                let send = false
+             countDown() {
                 if (this.model.mobile) {
                     this.$Loading.start();
                     toSendsms(this.model.mobile).then((res) => {
-                        send = true
                         this.$Message.success('发送成功');
-                        console.log("res", res)
                         if (res) {
-
+                            if (!this.canClick) return
+                            this.canClick = false
+                            let clock = window.setInterval(() => {
+                                this.totalTime--
+                                this.content = '重新获取' + '(' + this.totalTime + 's' + ')'
+                                if (this.totalTime < 1) {
+                                    window.clearInterval(clock)
+                                    this.content = '点击获取'
+                                    this.canClick = true
+                                    this.buttonOk = {
+                                        color: '#fff',
+                                        background: '#3e97df'
+                                    }
+                                }
+                            }, 1000)
                         }
                     })
                     this.$Loading.finish();
                 } else {
                     this.$Message.success('请输入手机号');
-                    send = false
-                }
-                return send
-            },
-            async countDown() {
-                let send = await this.sendsms()
-                console.log("send", send)
-                if (send) {
-                    if (!this.canClick) return
-                    this.canClick = false
-                    let clock = window.setInterval(() => {
-                        this.totalTime--
-                        this.content = '重新获取' + '(' + this.totalTime + 's' + ')'
-                        if (this.totalTime < 1) {
-                            window.clearInterval(clock)
-                            this.content = '点击获取'
-                            this.canClick = true
-                            this.buttonOk = {
-                                color: '#fff',
-                                background: '#3e97df'
-                            }
-                        }
-                    }, 1000)
                 }
             },
             backHandle() {
@@ -158,11 +166,10 @@
                             code: this.model.code,
                             password: this.model.password,
                             age: '',
-                            userImage: this.model.userImage,
+                            userImage: this.model.userImage || 'http://cyq-test.oss-cn-beijing.aliyuncs.com/car-person.png',
                             sex: ''
                         }
                         toRegister(params).then((res) => {
-                            console.log("res", res)
                             this.$Message.success('注册成功');
                             this.$router.push({path: '/login'})
                             this.$Loading.finish();
